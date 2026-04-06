@@ -11,7 +11,6 @@
         input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: #fff; }
         button { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
         button.back { background: #333; color: #ccc; margin-top: 5px; }
-        .card-fields { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; }
     </style>
 </head>
 <body>
@@ -20,7 +19,7 @@
     <h2>PODSUMOWANIE</h2>
     <div id="summary" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;"></div>
 
-    <!-- KROK 1 -->
+    <!-- KROK 1: WYSYŁKA -->
     <div id="step1" class="step active">
         <h3>DANE WYSYŁKI</h3>
         <input type="text" id="fName" placeholder="Imię i Nazwisko">
@@ -30,22 +29,22 @@
         <button onclick="nextStep()">DALEJ: PŁATNOŚĆ</button>
     </div>
 
-    <!-- KROK 2 -->
+    <!-- KROK 2: PŁATNOŚĆ -->
     <div id="step2" class="step">
-        <h3>PŁATNOŚĆ</h3>
-        <button onclick="showCardForm()">KARTA PŁATNICZA</button>
+        <h3>WYBIERZ METODĘ PŁATNOŚCI</h3>
         
-        <!-- UKRYTE POLA KARTY -->
-        <div id="cardFields" class="card-fields">
+        <button type="button" onclick="pokazPolaKarty()" style="background: #222; color: #fff; border: 1px solid #444;">KARTA PŁATNICZA</button>
+        
+        <div id="formularzKarty" style="display:none; margin: 15px 0; padding: 15px; border: 1px dashed #444;">
             <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)" maxlength="16">
             <div style="display:flex; gap:10px;">
                 <input type="text" id="cardExp" placeholder="MM/RR" maxlength="5">
                 <input type="text" id="cardCvv" placeholder="CVV" maxlength="3">
             </div>
-            <button onclick="finish('Karta')">ZAPŁAĆ KARTĄ</button>
+            <button onclick="finish('Karta')" style="background: #fff; color: #000;">ZAPŁAĆ KARTĄ</button>
         </div>
 
-        <button onclick="finish('PayPal')">PAYPAL</button>
+        <button onclick="finish('PayPal')" style="background: #222; color: #fff; border: 1px solid #444; margin-top: 10px;">PAYPAL</button>
         <button class="back" onclick="prevStep()">POWRÓT</button>
     </div>
 </div>
@@ -77,8 +76,8 @@
         document.getElementById('step1').classList.add('active');
     }
 
-    function showCardForm() {
-        document.getElementById('cardFields').style.display = 'block';
+    function pokazPolaKarty() {
+        document.getElementById('formularzKarty').style.display = 'block';
     }
 
     function finish(method) {
@@ -115,7 +114,7 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === 'OK') {
-                alert("ZAMÓWIENIE ZŁOŻONE Pomyślnie!");
+                alert("ZAMÓWIENIE ZŁOŻONE POMYŚLNIE!");
                 localStorage.clear();
                 window.location.href = "index.html";
             }
@@ -125,4 +124,5 @@
 </script>
 </body>
 </html>
+
 
