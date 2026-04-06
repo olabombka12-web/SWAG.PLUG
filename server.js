@@ -8,17 +8,15 @@ app.use(express.static(__dirname));
 
 // JEDYNA, POPRAWNA KONFIGURACJA POCZTY (Port 587 dla Render)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false, // Musi być false dla portu 587
+    host: '://gmail.com',
+    port: 465, // Zmień z 587 na 465
+    secure: true, // Zmień z false na true
     auth: {
         user: 'olabomba12@gmail.com',
-        pass: 'rqijphovdgxhlczi' // Hasło bez spacji
-    },
-    tls: {
-        rejectUnauthorized: false // Pomaga uniknąć blokad na serwerach
+        pass: 'rqijphovdgxhlczi' 
     }
 });
+
 
 app.post('/save-shipping', (req, res) => {
     const order = req.body;
