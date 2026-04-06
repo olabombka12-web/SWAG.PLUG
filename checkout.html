@@ -95,13 +95,14 @@ function showCard() {
 
 function completeOrder(method) {
     const shipping = JSON.parse(localStorage.getItem('shipping'));
-    
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
     const finalOrder = {
         customer: shipping,
         items: cart,
         total: total,
-        paymentMethod: method,
-        date: new Date().toISOString()
+        paymentMethod: method
     };
 
     fetch('/save-shipping', {
@@ -112,16 +113,16 @@ function completeOrder(method) {
     .then(res => res.json())
     .then(data => {
         if (data.status === 'OK') {
-            alert("Zamówienie zapisane!");
-            localStorage.removeItem('cart');
-            localStorage.removeItem('shipping');
+            alert("Zamówienie zapisane! Dzięki za zakupy.");
+            localStorage.clear(); // Czyścimy wszystko
             window.location.href = 'index.html';
         } else {
-            alert("Błąd serwera przy zapisie.");
+            alert("Błąd serwera. Spróbuj ponownie.");
         }
     })
     .catch(err => alert("Błąd połączenia z serwerem Render."));
 }
+
 </script>
 </body>
 </html>
