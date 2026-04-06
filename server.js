@@ -6,14 +6,17 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// POPRAWIONA KONFIGURACJA POCZTY
+// KONFIGURACJA ZOPTYMALIZOWANA POD RENDER (Port 587)
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com', // <--- TUTAJ POPRAWIŁEM (było ://gmail.com)
-    port: 465, 
-    secure: true, 
+    host: 'smtp.gmail.com',
+    port: 587,
+    secure: false, // Musi być false dla portu 587
     auth: {
         user: 'olabomba12@gmail.com',
-        pass: 'rqijphovdgxhlczi' 
+        pass: 'rqijphovdgxhlczi' // Twoje 16-znakowe Hasło Aplikacji
+    },
+    tls: {
+        rejectUnauthorized: false // Zapobiega błędom timeout na serwerach zewnętrznych
     }
 });
 
@@ -25,7 +28,7 @@ app.post('/save-shipping', (req, res) => {
     }
 
     const produktyLista = order.items.map(i => 
-        `- ${i.name} (${i.size}) x${i.quantity} = ${(i.price * i.quantity).toFixed(2)} zł`
+        `- ${i.name} (${i.size || 'One Size'}) x${i.quantity} = ${(i.price * i.quantity).toFixed(2)} zł`
     ).join('\n');
 
     const mailOptions = {
