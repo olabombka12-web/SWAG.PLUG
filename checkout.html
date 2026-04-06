@@ -1,71 +1,10 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - SWAG.PLUG</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        /* Prosty styl dla kroków, jeśli nie masz go w style.css */
-        .step { display: none; }
-        .step.active { display: block; }
-        .checkout-container { max-width: 600px; margin: 20px auto; padding: 20px; font-family: sans-serif; }
-        input { display: block; width: 100%; margin-bottom: 10px; padding: 10px; }
-        button { padding: 10px 20px; cursor: pointer; background: #000; color: #fff; border: none; width: 100%; margin-top: 10px; }
-        .secondary-btn { background: #555; }
-    </style>
-</head>
-<body>
-
-<div class="checkout-container">
-    <h2>Podsumowanie koszyka</h2>
-    <div id="cartSummary"></div>
-
-    <!-- KROK 1: DANE WYSYŁKI -->
-    <div class="step active" id="stepShipping">
-        <h2>Dane do wysyłki</h2>
-        <input type="text" id="firstName" placeholder="Imię" required>
-        <input type="text" id="lastName" placeholder="Nazwisko" required>
-        <input type="tel" id="phone" placeholder="Numer telefonu" required>
-        <input type="text" id="address" placeholder="Adres (Ulica, nr domu)" required>
-        <input type="text" id="postalCode" placeholder="Kod pocztowy" required>
-        <input type="text" id="city" placeholder="Miejscowość" required>
-        <input type="text" id="country" placeholder="Kraj" value="Polska" required>
-        <button onclick="saveShipping()">DALEJ: PŁATNOŚĆ</button>
-    </div>
-
-    <!-- KROK 2: PŁATNOŚĆ -->
-    <div class="step" id="stepPayment">
-        <h2>Wybierz metodę płatności</h2>
-        <div class="payment-methods" style="display:flex; gap:10px;">
-            <button class="secondary-btn" onclick="showPayPal()">PayPal</button>
-            <button class="secondary-btn" onclick="showCard()">Karta płatnicza</button>
-        </div>
-
-        <div id="paypalForm" style="display:none; margin-top:20px; text-align: center;">
-            <p>Zostaniesz przekierowany do systemu PayPal.</p>
-            <button onclick="completeOrder('PayPal')">ZAPŁAĆ PRZEZ PAYPAL</button>
-        </div>
-
-        <div id="cardForm" style="display:none; margin-top:20px;">
-            <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)">
-            <div style="display:flex; gap:10px;">
-                <input type="text" id="expiry" placeholder="MM/RR">
-                <input type="text" id="cvv" placeholder="CVV">
-            </div>
-            <button onclick="completeOrder('Karta')">ZAPŁAĆ KARTĄ</button>
-        </div>
-        
-        <button onclick="backToShipping()" style="background:none; color: #555; text-decoration: underline; margin-top: 20px; border:none; width:auto; display:block; margin-left:auto; margin-right:auto;">Powrót do danych wysyłki</button>
-    </div>
-</div>
-
 <script>
+    // 1. Ładowanie danych z koszyka
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     let total = 0;
     const summary = document.getElementById('cartSummary');
 
-    // 1. Wyświetlanie koszyka
+    // Wyświetlanie podsumowania (TEGO BRAKOWAŁO)
     if (cart.length === 0) {
         summary.innerHTML = '<p>Twój koszyk jest pusty!</p>';
         setTimeout(() => { window.location.href = 'index.html'; }, 2000);
@@ -78,14 +17,15 @@
         summary.innerHTML += `<p style="font-size: 1.2em;"><strong>Razem: ${total.toFixed(2)} zł</strong></p>`;
     }
 
-    // 2. Przejście do płatności
+    // 2. Funkcja przejścia do płatności
     function saveShipping() {
         const fields = ['firstName', 'lastName', 'phone', 'address', 'postalCode', 'city', 'country'];
         const shipping = {};
         let valid = true;
 
         fields.forEach(id => {
-            const val = document.getElementById(id).value.trim();
+            const el = document.getElementById(id);
+            const val = el ? el.value.trim() : "";
             if (!val) valid = false;
             shipping[id] = val;
         });
@@ -96,13 +36,15 @@
         }
 
         localStorage.setItem('shipping', JSON.stringify(shipping));
-        document.getElementById('stepShipping').classList.remove('active');
-        document.getElementById('stepPayment').classList.add('active');
+        
+        // Przełączanie widoku
+        document.getElementById('stepShipping').style.display = 'none';
+        document.getElementById('stepPayment').style.display = 'block';
     }
 
     function backToShipping() {
-        document.getElementById('stepPayment').classList.remove('active');
-        document.getElementById('stepShipping').classList.add('active');
+        document.getElementById('stepPayment').style.display = 'none';
+        document.getElementById('stepShipping').style.display = 'block';
     }
 
     // 3. Wybór formy płatności
@@ -116,7 +58,7 @@
         document.getElementById('paypalForm').style.display = 'none';
     }
 
-    // 4. Finalizacja
+    // 4. Finalizacja i wysyłka do SERVER.JS
     function completeOrder(method) {
         const shipping = JSON.parse(localStorage.getItem('shipping'));
         
@@ -140,15 +82,13 @@
                 localStorage.clear();
                 window.location.href = 'index.html';
             } else {
-                alert("Błąd serwera. Sprawdź logi na Renderze.");
+                alert("Błąd serwera przy zapisie.");
             }
         })
         .catch(err => {
             console.error(err);
-            alert("Błąd połączenia. Upewnij się, że serwer na Renderze działa jako 'Web Service'.");
+            alert("Błąd połączenia z serwerem Render.");
         });
     }
 </script>
-</body>
-</html>
 
