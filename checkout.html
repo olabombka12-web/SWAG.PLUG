@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
     <link rel="stylesheet" href="style.css">
-    <!-- TWOJE ID PAYPAL - POPRAWIONE -->
-   <script src="https://paypal.com"></script>
+    
+    <!-- POPRAWIONY SKRYPT PAYPAL Z TWOIM ID -->
+    <script src="https://paypal.com"></script>
 
     <style>
         .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: #000; color: #fff; border: 1px solid #333; font-family: sans-serif; }
@@ -17,7 +18,7 @@
         button:hover { background: #ccc; }
         button.back { background: #333; color: #ccc; margin-top: 5px; }
         #summary p { border-bottom: 1px solid #222; padding: 5px 0; margin: 5px 0; display: flex; justify-content: space-between; }
-        #paypal-button-container { margin-top: 20px; }
+        #paypal-button-container { margin-top: 20px; min-height: 150px; }
     </style>
 </head>
 <body>
@@ -37,7 +38,7 @@
 
     <div id="step2" class="step">
         <h3 style="color: #888;">[02] DOKOŃCZ PŁATNOŚĆ</h3>
-        <p style="font-size: 0.9em; color: #ccc; margin-bottom: 15px;">Wybierz płatność kartą lub PayPal, aby sfinalizować zamówienie.</p>
+        <p style="font-size: 0.9em; color: #ccc; margin-bottom: 15px;">Wybierz metodę płatności poniżej:</p>
         
         <!-- Tu PayPal automatycznie wstawi przyciski -->
         <div id="paypal-button-container"></div>
@@ -81,45 +82,49 @@
     }
 
     // KONFIGURACJA PRZYCISKÓW PAYPAL
-    paypal.Buttons({
-        createOrder: function(data, actions) {
-            return actions.order.create({
-                purchase_units: [{
-                    amount: {
-                        value: total.toFixed(2)
-                    }
-                }]
-            });
-        },
-        onApprove: function(data, actions) {
-            return actions.order.capture().then(function(details) {
-                const orderData = {
-                    Klient: document.getElementById('fName').value,
-                    Adres: document.getElementById('addr').value + ", " + document.getElementById('city').value,
-                    Telefon: document.getElementById('phone').value,
-                    Produkty: cart.map(i => `${i.name} (${i.size}) x${i.quantity}`).join(", "),
-                    Suma: total.toFixed(2) + " PLN",
-                    Status: "ZAPŁACONO",
-                    PayPal_ID: details.id
-                };
-
-                fetch('https://formspree.io/f/mzdkopjg', { 
-                    method: 'POST',
-                    headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                })
-                .then(() => {
-                    alert("ZAMÓWIENIE UKOŃCZONE! Płatność otrzymana.");
-                    localStorage.clear();
-                    window.location.href = "index.html";
+    if (window.paypal) {
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: total.toFixed(2)
+                        }
+                    }]
                 });
-            });
-        },
-        onError: function(err) {
-            alert("Błąd płatności. Upewnij się, że Twoje konto PayPal Live jest w pełni skonfigurowane.");
-            console.error(err);
-        }
-    }).render('#paypal-button-container');
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    const orderData = {
+                        Klient: document.getElementById('fName').value,
+                        Adres: document.getElementById('addr').value + ", " + document.getElementById('city').value,
+                        Telefon: document.getElementById('phone').value,
+                        Produkty: cart.map(i => `${i.name} (${i.size}) x${i.quantity}`).join(", "),
+                        Suma: total.toFixed(2) + " PLN",
+                        Status: "ZAPŁACONO",
+                        PayPal_ID: details.id
+                    };
+
+                    fetch('https://formspree.io/f/mzdkopjg', { 
+                        method: 'POST',
+                        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    })
+                    .then(() => {
+                        alert("ZAMÓWIENIE UKOŃCZONE! Płatność otrzymana.");
+                        localStorage.clear();
+                        window.location.href = "index.html";
+                    });
+                });
+            },
+            onError: function(err) {
+                alert("Błąd płatności. Upewnij się, że Twoje konto PayPal Live jest aktywne.");
+                console.error(err);
+            }
+        }).render('#paypal-button-container');
+    } else {
+        console.error("Błąd: Skrypt PayPal nie został załadowany. Sprawdź Client ID.");
+    }
 </script>
 </body>
 </html>
