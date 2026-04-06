@@ -8,7 +8,14 @@ const PORT = process.env.PORT || 3000;
 
 // Middleware do obsługi JSON i serwowania plików (html, css, js)
 app.use(express.json());
-app.use(express.static('.'));
+// Precyzyjne serwowanie plików z folderu głównego
+app.use(express.static(path.join(__dirname, '.')));
+
+// Dodatkowy "bezpiecznik" - bezpośrednia ścieżka do skryptu
+app.get('/script.js', (req, res) => {
+  res.sendFile(path.join(__dirname, 'script.js'));
+});
+
 
 app.post('/save-shipping', (req, res) => {
   const order = req.body;
