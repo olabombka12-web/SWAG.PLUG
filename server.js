@@ -10,6 +10,7 @@ app.use(express.static(__dirname));
 
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
 
+// Endpoint do zapisu zamówienia
 app.post('/save-shipping', (req, res) => {
     const order = req.body;
     order.server_date = new Date().toISOString();
@@ -22,11 +23,8 @@ app.post('/save-shipping', (req, res) => {
         orders.push(order);
 
         fs.writeFile(ORDERS_FILE, JSON.stringify(orders, null, 2), (writeErr) => {
-            if (writeErr) {
-                console.error("Błąd zapisu:", writeErr);
-                return res.status(500).json({ status: 'error' });
-            }
-            res.json({ status: 'OK' }); // To 'OK' jest kluczowe dla Twojego checkout.html
+            if (writeErr) return res.status(500).json({ status: 'error' });
+            res.json({ status: 'OK' });
         });
     });
 });
