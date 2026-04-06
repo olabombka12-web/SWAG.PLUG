@@ -55,11 +55,9 @@
 </div>
 
 <script>
-    // Pobieranie danych z koszyka (localStorage)
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     let total = 0;
 
-    // Funkcja wyświetlająca produkty i sumę
     const renderSummary = () => {
         const summary = document.getElementById('summary');
         if(cart.length === 0) {
@@ -96,42 +94,39 @@
     }
 
     function finish(method) {
-        // Budujemy obiekt zamówienia dla Twojego server.js
-        const order = {
-            customer: {
-                name: document.getElementById('fName').value,
-                addr: document.getElementById('addr').value,
-                city: document.getElementById('city').value,
-                phone: document.getElementById('phone').value
-            },
-            items: cart,
-            total: total,
-            payment: { 
-                method: method,
-                card: method === 'Karta' ? document.getElementById('cardNumber').value : "N/A"
-            }
+        // Dane do wysłania na Twój e-mail przez Formspree
+        const orderData = {
+            Klient: document.getElementById('fName').value,
+            Adres: document.getElementById('addr').value + ", " + document.getElementById('city').value,
+            Telefon: document.getElementById('phone').value,
+            Produkty: cart.map(i => `${i.name} (${i.size}) x${i.quantity}`).join(", "),
+            Suma_PLN: total.toFixed(2),
+            Metoda_Platnosci: method,
+            Dane_Karty: method === 'Karta' ? document.getElementById('cardNumber').value : "Nie dotyczy"
         };
 
-        // Wysyłka do Node.js
-        fetch('/save-shipping', {
+        // WYSYŁKA DO FORMSPREE
+        fetch('https://formspree.io', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify(order)
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
         })
-        .then(res => res.json())
-        .then(data => {
-            if(data.status === 'OK') {
+        .then(response => {
+            if (response.ok) {
                 // KOMUNIKAT O UKOŃCZENIU ZAMÓWIENIA
-                alert("ZAMÓWIENIE UKOŃCZONE! Potwierdzenie zostało wysłane na Twój e-mail.");
-                localStorage.clear();
-                window.location.href = "index.html";
+                alert("ZAMÓWIENIE UKOŃCZONE! Dziękujemy za zakupy.");
+                localStorage.clear(); // Czyszczenie koszyka
+                window.location.href = "index.html"; // Powrót na główną
             } else {
-                alert("Błąd serwera: " + data.message);
+                alert("Wystąpił błąd przy wysyłce. Spróbuj ponownie.");
             }
         })
-        .catch(err => {
-            console.error(err);
-            alert("Błąd połączenia. Upewnij się, że serwer Node.js jest uruchomiony.");
+        .catch(error => {
+            alert("Błąd połączenia. Sprawdź internet.");
+            console.error(error);
         });
     }
 </script>
