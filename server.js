@@ -7,7 +7,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com', // <--- TUTAJ BYŁ BŁĄD. TERAZ JEST POPRAWNIE.
+    host: 'smtp.gmail.com', // <--- TUTAJ POPRAWIŁEM BŁĄD (było ://gmail.com)
     port: 465, 
     secure: true, 
     auth: {
