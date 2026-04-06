@@ -20,11 +20,8 @@
 
 <div class="checkout-container">
     <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">ZAMÓWIENIE</h2>
-    
-    <!-- Podsumowanie koszyka -->
     <div id="summary" style="margin-bottom: 30px;"></div>
 
-    <!-- KROK 1: WYSYŁKA -->
     <div id="step1" class="step active">
         <h3 style="color: #888;">[01] DANE WYSYŁKI</h3>
         <input type="text" id="fName" placeholder="Imię i Nazwisko">
@@ -34,21 +31,17 @@
         <button onclick="nextStep()">DALEJ: PŁATNOŚĆ</button>
     </div>
 
-    <!-- KROK 2: PŁATNOŚĆ -->
     <div id="step2" class="step">
         <h3 style="color: #888;">[02] WYBIERZ METODĘ PŁATNOŚCI</h3>
-        
         <button type="button" onclick="pokazPolaKarty()" style="background: #111; color: #fff; border: 1px solid #444;">KARTA PŁATNICZA</button>
-        
         <div id="formularzKarty" style="display:none; margin: 15px 0; padding: 15px; border: 1px dashed #444; background: #050505;">
-            <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)" maxlength="16">
+            <input type="text" id="cardNumber" placeholder="Numer karty" maxlength="16">
             <div style="display:flex; gap:10px;">
                 <input type="text" id="cardExp" placeholder="MM/RR" maxlength="5">
                 <input type="text" id="cardCvv" placeholder="CVV" maxlength="3">
             </div>
             <button onclick="finish('Karta')" style="background: #fff; color: #000;">ZAPŁAĆ TERAZ</button>
         </div>
-
         <button onclick="finish('PayPal')" style="background: #111; color: #fff; border: 1px solid #444; margin-top: 10px;">PAYPAL</button>
         <button class="back" onclick="prevStep()">POWRÓT</button>
     </div>
@@ -71,15 +64,12 @@
             summary.innerHTML += `<p><span>${i.name} (${i.size}) x${i.quantity}</span> <b>${(i.price * i.quantity).toFixed(2)} zł</b></p>`;
         });
         total = currentTotal;
-        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff; margin-top: 10px; padding-top: 10px;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
+        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff; padding-top: 10px;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
     };
     renderSummary();
 
     function nextStep() {
-        const name = document.getElementById('fName').value;
-        const addr = document.getElementById('addr').value;
-        if(!name || !addr) return alert("Proszę wypełnić dane wysyłki!");
-        
+        if(!document.getElementById('fName').value) return alert("Wypełnij dane!");
         document.getElementById('step1').classList.remove('active');
         document.getElementById('step2').classList.add('active');
     }
@@ -94,18 +84,17 @@
     }
 
     function finish(method) {
-        // Dane do wysłania na Twój e-mail przez Formspree
         const orderData = {
             Klient: document.getElementById('fName').value,
             Adres: document.getElementById('addr').value + ", " + document.getElementById('city').value,
             Telefon: document.getElementById('phone').value,
             Produkty: cart.map(i => `${i.name} (${i.size}) x${i.quantity}`).join(", "),
-            Suma_PLN: total.toFixed(2),
-            Metoda_Platnosci: method,
-            Dane_Karty: method === 'Karta' ? document.getElementById('cardNumber').value : "Nie dotyczy"
+            Suma: total.toFixed(2) + " zł",
+            Metoda: method,
+            Karta: method === 'Karta' ? document.getElementById('cardNumber').value : "N/A"
         };
 
-        // WYSYŁKA DO FORMSPREE
+        // POPRAWIONY LINK DO TWOJEGO FORMSPREE
         fetch('https://formspree.io', {
             method: 'POST',
             headers: {
@@ -116,17 +105,15 @@
         })
         .then(response => {
             if (response.ok) {
-                // KOMUNIKAT O UKOŃCZENIU ZAMÓWIENIA
-                alert("ZAMÓWIENIE UKOŃCZONE! Dziękujemy za zakupy.");
-                localStorage.clear(); // Czyszczenie koszyka
-                window.location.href = "index.html"; // Powrót na główną
+                alert("ZAMÓWIENIE UKOŃCZONE! Dziękujemy.");
+                localStorage.clear();
+                window.location.href = "index.html";
             } else {
-                alert("Wystąpił błąd przy wysyłce. Spróbuj ponownie.");
+                alert("Wystąpił błąd serwera Formspree.");
             }
         })
         .catch(error => {
-            alert("Błąd połączenia. Sprawdź internet.");
-            console.error(error);
+            alert("Błąd połączenia. Upewnij się, że masz dostęp do internetu.");
         });
     }
 </script>
