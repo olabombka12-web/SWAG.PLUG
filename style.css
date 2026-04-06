@@ -1,0 +1,418 @@
+/* OPIUM / CYBER-GRUNGE VIBE - FINAL VERSION */
+@import url('https://googleapis.com');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  cursor: crosshair; /* Kursor celownik */
+}
+
+body{
+  background: #000;
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  overflow-x: hidden;
+  line-height: 1.2;
+}
+
+/* TOP BAR */
+.top-bar{
+  background: #fff;
+  color: #000;
+  font-weight: 900;
+  text-align: center;
+  padding: 8px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* HEADER - WYŚRODKOWANY */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 5%;
+  border-bottom: 3px solid #fff;
+  background: #000;
+  width: 100%;
+  header {
+  display: flex;
+  flex-direction: column; /* Układa elementy jeden pod drugim */
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px; /* Więcej miejsca dla loga */
+  background: #000;
+  border-bottom: 5px solid #fff;
+  width: 100%;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0; /* Brak odstępu - ciasny, agresywny wygląd */
+}
+
+ .logo-icon {
+    height: 250px; /* Duży rozmiar dla detali tygrysa i łańcucha */
+    width: auto;
+    
+    /* USUŃ INVERT! Teraz tylko dopieszczamy widoczność białych linii */
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 5px rgba(255,255,255,0.1));
+    
+    display: block;
+    margin: 0 auto;
+    image-rendering: auto; 
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: flicker 6s infinite alternate; /* Mroczne migotanie */
+
+}
+
+.logo:hover .logo-icon {
+    transform: scale(1.1) rotate(-1deg);
+    /* Mocniejszy blask neonu na hover */
+    filter: brightness(1.5) drop-shadow(0 0 15px rgba(255,255,255,0.4));
+}
+
+/* Napis SWAG.PLUG pod logo */
+.logo span {
+    display: block;
+    font-family: 'Russo One', sans-serif;
+    font-size: 50px;
+    letter-spacing: -4px;
+    color: #fff;
+    margin-top: -40px; /* Przyciąga napis blisko łańcucha */
+    text-transform: uppercase;
+    text-align: center;
+}
+
+}
+
+.logo:hover .logo-icon {
+  transform: scale(1.15); /* Tygrys "skacze" na użytkownika */
+  filter: invert(1) contrast(2) drop-shadow(0 0 15px #fff);
+}
+
+.logo span {
+  font-family: 'Russo One', sans-serif;
+  font-size: 60px; /* Wielki napis pod tygrysem */
+  letter-spacing: -5px; /* Bardzo ciasno */
+  line-height: 0.8;
+  margin-top: -15px;
+  text-transform: uppercase;
+}
+
+/* Przycisk koszyka ląduje teraz dyskretnie pod logo lub w rogu */
+.cart-icon {
+    margin-top: 30px;
+}
+
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-family: 'Russo One', sans-serif;
+  font-size: clamp(24px, 5vw, 50px); /* Skaluje się do ekranu */
+  letter-spacing: -3px;
+  text-transform: uppercase;
+}
+
+.logo-icon {
+    filter: invert(1);
+    height: 60px;
+    width: auto;
+}
+
+.cart-icon button {
+    background: none;
+    border: 1px solid #fff;
+    color: #fff;
+    padding: 10px 20px;
+    font-family: 'Space Mono', monospace;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cart-icon button:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* BANER Z OCZAMI - IDEALNIE NA ŚRODKU */
+.highlight {
+    width: 100%;
+    background: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 3px solid #fff;
+    padding: 20px 0;
+}
+
+.highlight img {
+    max-width: 1200px; /* Nie rozciąga się w nieskończoność */
+    width: 90%;
+    height: auto;
+    display: block;
+    image-rendering: pixelated; /* Ostrość kropek */
+    filter: grayscale(1) contrast(1.3);
+}
+
+/* KONTENER PRODUKTÓW - BRUTALIZM */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 0;
+    border-top: none;
+}
+
+.product {
+    display: flex;
+    flex-direction: column;
+    padding: 50px;
+    border: 1.5px solid #fff; /* Cieńsze linie wewnątrz siatki dla czytelności */
+    background: #000;
+    transition: 0.1s;
+}
+
+/* EFEKT INVERT NA HOVER */
+.product:hover {
+    background: #fff;
+    color: #000;
+}
+
+.product:hover .product-image {
+    filter: invert(1);
+}
+
+.product:hover .cart-btn {
+    background: #000;
+    color: #fff;
+}
+
+.product:hover .size-info-link {
+    color: #000;
+}
+
+.product-image {
+    width: 100%;
+    height: 550px;
+    object-fit: contain;
+    filter: grayscale(1) contrast(1.1);
+    transition: 0.2s;
+    margin-bottom: 30px;
+}
+
+.details h2 {
+    font-family: 'Russo One', sans-serif;
+    font-size: 40px;
+    line-height: 0.85;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+}
+
+.price {
+    font-size: 32px;
+    font-style: italic;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* FORMULARZE */
+select, input[type="number"] {
+    background: transparent;
+    color: inherit;
+    border: 1px solid currentColor;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-family: inherit;
+    width: 100%;
+    text-transform: uppercase;
+}
+
+/* PRZYCISKI */
+.cart-btn {
+    width: 100%;
+    padding: 22px;
+    background: #fff;
+    color: #000;
+    border: none;
+    font-family: 'Russo One', sans-serif;
+    font-size: 22px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.size-info-link {
+    display: block;
+    margin-top: 15px;
+    font-size: 12px;
+    text-decoration: underline;
+    text-align: center;
+    color: #666;
+    cursor: pointer;
+}
+
+/* MODALE */
+.cart-modal, .size-modal {
+    background: rgba(0,0,0,0.98);
+}
+
+.cart-box, .size-box {
+    background: #000;
+    border: 3px solid #fff;
+    color: #fff;
+    padding: 40px;
+    max-width: 600px;
+    width: 90%;
+}
+
+/* UKRYTY SCROLLBAR */
+::-webkit-scrollbar {
+  display: none;
+}
+/* WSKAŹNIK PRZEWIJANIA - OPIUM STYLE */
+.scroll-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 0;
+    background: #000;
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 8px;
+    border-bottom: 1.5px solid #fff;
+}
+
+.scroll-indicator span {
+    animation: blink 1.5s infinite ease-in-out;
+}
+
+.arrow {
+    width: 2px;
+    height: 40px;
+    background: #fff;
+    margin-top: 15px;
+    position: relative;
+    animation: slide 1.5s infinite ease-in-out;
+}
+
+/* ANIMACJE */
+@keyframes blink {
+    0% { opacity: 0.2; }
+    50% { opacity: 1; }
+    100% { opacity: 0.2; }
+}
+
+@keyframes slide {
+    0% { transform: translateY(-10px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+}
+
+/* OPCJONALNIE: PŁYNNE PRZEWIJANIE DLA CAŁEJ STRONY */
+html {
+    scroll-behavior: smooth;
+}
+/* NAWIGACJA - STRONA GŁÓWNA */
+nav {
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+}
+
+nav a {
+    text-decoration: none;
+    color: #fff;
+    font-family: 'Russo One', sans-serif; /* Ta sama czcionka co w logo */
+    font-size: 35px; /* Duży, konkretny napis */
+    text-transform: uppercase;
+    letter-spacing: -2px; /* Ciasny, agresywny rozstaw */
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+    padding: 10px 30px;
+}
+
+nav a:hover {
+    background: #fff; /* Odwrócenie kolorów na hover (Invert vibe) */
+    color: #000;
+    letter-spacing: 5px; /* Tekst się "rozszerza" przy najechaniu */
+    transform: skewX(-10px); /* Lekkie pochylenie dla dynamiki */
+}
+
+/* KOSZYK (PRZYCISK W ROGU) - Też go powiększmy */
+.cart-icon button {
+    background: #000;
+    border: 2px solid #fff;
+    color: #fff;
+    padding: 15px 25px;
+    font-family: 'Russo One', sans-serif;
+    font-size: 18px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cart-icon button:hover {
+    background: #fff;
+    color: #000;
+}
+/* CUSTOMOWY PASEK PRZEWIJANIA (SCROLLBAR) */
+
+/* 1. Odblokowujemy scrollbar (usuwamy display: none, jeśli był wcześniej) */
+::-webkit-scrollbar {
+  display: block; 
+  width: 12px; /* Szerokość paska */
+  background: #000; /* Tło paska (czarne jak noc) */
+}
+
+/* 2. Wygląd "skobla" (tego, co przesuwasz) */
+::-webkit-scrollbar-thumb {
+  background: #fff; /* Skobel jest biały, żeby go było widać */
+  border: 3px solid #000; /* Dodajemy czarną przerwę wokół, żeby wyglądał na węższy i surowszy */
+  transition: 0.3s;
+}
+
+/* 3. Efekt po najechaniu na skobel */
+::-webkit-scrollbar-thumb:hover {
+  background: #00ff00; /* Neonowa zieleń na hover - pasuje do vibe'u "PLUG" */
+  cursor: grab;
+}
+
+/* 4. Tło pod paskiem (track) */
+::-webkit-scrollbar-track {
+  background: #000;
+  border-left: 1px solid #1a1a1a; /* Cienka linia oddzielająca pasek od strony */
+}
+
+/* Firefox (inna składnia) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #fff #000;
+}
+/* CELOWNIK ZAMIAST KURSERA */
+* {
+    /* 32 32 to środek celownika, żeby kliknięcie trafiało w sam środek krzyżyka */
+    cursor: url('cursor.png') 32 32, crosshair;
+}
+
+/* Zapewniamy, że na wszystkich klikalnych elementach celownik zostaje */
+a, button, select, input, .cart-btn, .logo, .size-info-link {
+    cursor: url('cursor.png') 32 32, pointer !important;
+}
+
+/* Opcjonalnie: efekt "namierzenia" na przyciskach */
+button:hover, .cart-btn:hover {
+    filter: drop-shadow(0 0 5px #fff); /* Delikatna biała poświata przy celowaniu */
+}

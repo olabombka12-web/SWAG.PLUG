@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>SWAG.PLUG</title>
+<meta name="„SWAG.PLUG — ARCHIVE ESSENTIALS FOR THE UNDERGROUND. NO RULES, NO LIMITS. JUST THE PLUG. JOIN THE VOID.”" content="SWAG.PLUG — Archive essentials for the underground. Cyber-grunge aesthetics and exclusive drops. Stay plugged in.">
+
+
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="top-bar">
+Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie przed godziną 17:00
+</div>
+
+<header>
+  <div class="logo">
+    <img src="images/sr.png" class="logo-icon" alt="Logo">
+    <span>SWAG.PLUG</span>
+  </div>
+  <nav>
+    <a href="#">STRONA GŁÓWNA</a>
+  </nav>
+  <div class="cart-icon">
+  <button onclick="showCart()">🛒 Koszyk (<span id="cart-count">0</span>)</button>
+</div>
+</header>
+
+<div class="highlight">
+  <img src="images/light2.jpg" alt="Highlight">
+  <div class="scroll-indicator">
+  <span>SCROLL_DOWN</span>
+  <div class="arrow"></div>
+</div>
+
+</div>
+
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/bra.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Angel Bones Corset</h2>
+    <div class="price">89 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- END PRODUCT -->
+ <section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/bag.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Cherry Crime Shoulder Bag</h2>
+    <div class="price">95 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/anime.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Kawaii Ghost Bag</h2>
+    <div class="price">129 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/cat-tshirt.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Nerdy Cat Tee</h2>
+    <div class="price">69 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/CD.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Cyber CD Mini Bag</h2>
+    <div class="price">112 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/dalma.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Dalmatan Princess furr jacket</h2>
+    <div class="price">149 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/furr.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Snow Angel Furr Coat</h2>
+    <div class="price">149 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/lace.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Midnight Lace Camisole</h2>
+    <div class="price">69 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/husta.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Dark Bandit Scarf</h2>
+    <div class="price">69 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/hoodie.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Shadow Lace Hood</h2>
+    <div class="price">125 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/hat.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>,,Good Save Me" hat</h2>
+    <div class="price">74 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/malborro.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Vintage Malborro Racing Tee</h2>
+    <div class="price">89 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/pants.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Printes Y2K Pants</h2>
+    <div class="price">225 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/pike.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Spike Top</h2>
+    <div class="price">95 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/puffer.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Ice Angel Anime Puffer Jacket</h2>
+    <div class="price">139 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+  </section>
+  <!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/rajty.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Grunge Print Thigts</h2>
+    <div class="price">45 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skeleton.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Skeleton Spine Tee</h2>
+    <div class="price">79 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Cyber Print Mini Sirt</h2>
+    <div class="price">79 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt2.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Code Matrix Mini Skirt</h2>
+    <div class="price">82 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt3.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Baby Blue Anime Skirt</h2>
+    <div class="price">75 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt4.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Bubble Pop Mini Skirt</h2>
+    <div class="price">78 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt5.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Black Lace Party Skirt</h2>
+    <div class="price">83 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/skirt6.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Angel Cloud Skirt</h2>
+    <div class="price">85 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/tooth.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Sweet Tooth Mini Bag</h2>
+    <div class="price">115 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/tee.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>,,Addicted" Longsleeve</h2>
+    <div class="price">89 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/top.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Goth Muse Top</h2>
+    <div class="price">85 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/top2.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Devil Heart Tube Top/h2>
+    <div class="price">69 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/tshirt.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Dark Angel Graphic Tee</h2>
+    <div class="price">79 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/tothbag.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Baby Toath Tote Bag</h2>
+    <div class="price">69 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/vest.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Arctic Angel Furr Vest</h2>
+    <div class="price">129 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/white.jpg.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Studded White Belt</h2>
+    <div class="price">105 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>XS</option>
+      <option>S</option>
+      <option>M</option>
+      <option>L</option>
+      <option>XL</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- PRODUCT (możesz kopiować ten blok) -->
+<section class="product">
+  <div class="gallery">
+    <div class="main-image">
+      <img src="images/wings.jpg" class="product-image" alt="Produkt">
+    </div>
+  </div>
+
+  <div class="details">
+    <h2>Angel Wings Handbag</h2>
+    <div class="price">119 zł</div>
+
+    <label>Size</label>
+    <select>
+      <option>One Size</option>
+    </select>
+
+    <div class="quantity">
+      <input type="number" value="1" min="1">
+    </div>
+
+    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+
+    <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
+      Size info
+    </p>
+  </div>
+</section>
+<!-- MODAL (size info) -->
+<div class="size-modal" id="sizeModal" onclick="closeSizeInfo(event)">
+  
+  <div class="size-box">
+    <span class="close" onclick="closeSizeInfo(event)">×</span>
+    <img id="sizeImage" src="" alt="Size Chart">
+  </div>
+
+</div>
+<script src="script.js"></script>
+<div class="cart-modal" id="cartModal" onclick="closeCart(event)">
+  <div class="cart-box">
+    <span class="close" onclick="closeCart(event)">×</span>
+    <h2>Twój koszyk</h2>
+    <div id="cartItems"></div>
+    <div class="cart-actions">
+      <p>Łączna kwota: <span id="cartTotal">0</span> zł</p>
+      <button onclick="checkout()">Przejdź do kasy</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

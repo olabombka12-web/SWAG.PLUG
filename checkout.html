@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - SWAG.PLUG</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body { padding: 20px; font-family: 'Arial', sans-serif; background: #f9f9f9; }
+  .checkout-container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+  input { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+  button { width: 100%; padding: 12px; background: black; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 10px; }
+  button:hover { opacity: 0.8; }
+  .step { display: none; }
+  .step.active { display: block; }
+  #cartSummary { background: #eee; padding: 15px; border-radius: 4px; margin-bottom: 20px; }
+  #cartSummary p { margin: 5px 0; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
+  .payment-methods { display: flex; gap: 10px; margin-top: 10px; }
+  .secondary-btn { background: #555; }
+</style>
+</head>
+<body>
+
+<div class="checkout-container">
+  <h2>Podsumowanie koszyka</h2>
+  <div id="cartSummary"></div>
+
+  <!-- KROK 1: DANE WYSYŁKI -->
+  <div class="step active" id="stepShipping">
+    <h2>Dane do wysyłki</h2>
+    <input type="text" id="firstName" placeholder="Imię" required>
+    <input type="text" id="lastName" placeholder="Nazwisko" required>
+    <input type="tel" id="phone" placeholder="Numer telefonu" required>
+    <input type="text" id="address" placeholder="Adres (Ulica, nr domu)" required>
+    <input type="text" id="postalCode" placeholder="Kod pocztowy" required>
+    <input type="text" id="city" placeholder="Miejscowość" required>
+    <input type="text" id="country" placeholder="Kraj" value="Polska" required>
+    <button onclick="saveShipping()">DALEJ: PŁATNOŚĆ</button>
+  </div>
+
+  <!-- KROK 2: PŁATNOŚĆ -->
+  <div class="step" id="stepPayment">
+    <h2>Wybierz metodę płatności</h2>
+    <div class="payment-methods">
+      <button class="secondary-btn" onclick="showPayPal()">PayPal</button>
+      <button class="secondary-btn" onclick="showCard()">Karta płatnicza</button>
+    </div>
+
+    <!-- PayPal -->
+    <div id="paypalForm" style="display:none; margin-top:20px; text-align: center;">
+      <p>Zostaniesz przekierowany do systemu PayPal.</p>
+      <button onclick="completeOrder('PayPal')">ZAPŁAĆ PRZEZ PAYPAL</button>
+    </div>
+
+    <!-- Karta -->
+    <div id="cardForm" style="display:none; margin-top:20px;">
+      <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)">
+      <div style="display:flex; gap:10px;">
+        <input type="text" id="expiry" placeholder="MM/RR">
+        <input type="text" id="cvv" placeholder="CVV">
+      </div>
+      <button onclick="completeOrder('Karta')">ZAPŁAĆ KARTĄ</button>
+    </div>
+    
+    <button onclick="backToShipping()" style="background:none; color: #555; text-decoration: underline; margin-top: 20px;">Powrót do danych wysyłki</button>
+  </div>
+</div>
+
+<script>
+// 1. Ładowanie koszyka
+const cart = JSON.parse(localStorage.getItem('cart')) || [];
+let total = 0;
+const summary = document.getElementById('cartSummary');
+
+if (cart.length === 0) {
+    summary.innerHTML = '<p>Twój koszyk jest pusty!</p>';
+    setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+} else {
+    cart.forEach(item => {
+        total += item.price * item.quantity;
+        summary.innerHTML += `<p>${item.name} (${item.size}) x${item.quantity} - <b>${item.price * item.quantity} zł</b></p>`;
+    });
+    summary.innerHTML += `<p style="font-size: 1.2em;"><strong>Razem: ${total} zł</strong></p>`;
+}
+
+// 2. Obsługa kroków
+function saveShipping() {
+    const shipping = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        phone: document.getElementById('phone').value.trim(),
+        address: document.getElementById('address').value.trim(),
+        postalCode: document.getElementById('postalCode').value.trim(),
+        city: document.getElementById('city').value.trim(),
+        country: document.getElementById('country').value.trim()
+    };
+
+    if (Object.values(shipping).some(val => val === "")) {
+        alert("Wypełnij wszystkie pola wysyłki!");
+        return;
+    }
+
+    // Zapisujemy w pamięci tymczasowej
+    localStorage.setItem('shipping', JSON.stringify(shipping));
+
+    // Przełączamy widok
+    document.getElementById('stepShipping').classList.remove('active');
+    document.getElementById('stepPayment').classList.add('active');
+}
+
+function backToShipping() {
+    document.getElementById('stepPayment').classList.remove('active');
+    document.getElementById('stepShipping').classList.add('active');
+}
+
+// 3. Wybór płatności
+function showPayPal() {
+    document.getElementById('paypalForm').style.display = 'block';
+    document.getElementById('cardForm').style.display = 'none';
+}
+
+function showCard() {
+    document.getElementById('cardForm').style.display = 'block';
+    document.getElementById('paypalForm').style.display = 'none';
+}
+
+// 4. Finalizacja i wysyłka do SERVER.JS
+function completeOrder(method) {
+    const shipping = JSON.parse(localStorage.getItem('shipping'));
+
+    if (!shipping) {
+        alert("Błąd danych wysyłkowych. Wróć do poprzedniego kroku.");
+        return;
+    }
+
+    // TWORZYMY OBIEKT Z DANYMI PŁATNOŚCI
+    let paymentData = { method: method };
+
+    // Jeśli wybrano kartę, pobieramy dane z pól tekstowych
+    if (method === 'Karta') {
+        const cardNumber = document.getElementById('cardNumber').value.trim();
+        const expiry = document.getElementById('expiry').value.trim();
+        const cvv = document.getElementById('cvv').value.trim();
+
+        if (!cardNumber || !expiry || !cvv) {
+            alert("Proszę wypełnić wszystkie dane karty!");
+            return;
+        }
+
+        paymentData.details = {
+            cardNumber: cardNumber,
+            expiry: expiry,
+            cvv: cvv
+        };
+    }
+
+    // Składamy pełny obiekt zamówienia
+    const fullOrder = {
+        customer: shipping,
+        products: cart,
+        totalPrice: total,
+        payment: paymentData, // Teraz tutaj są dane karty!
+        orderDate: new Date().toISOString()
+    };
+
+    // WYSYŁKA NA SERWER (bez zmian)
+    fetch('/save-shipping', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(fullOrder)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'OK') {
+            alert("Dziękujemy! Zamówienie (opłacone kartą) zostało zapisane.");
+            localStorage.clear();
+            window.location.href = 'index.html';
+        }
+    })
+    .catch(error => {
+        console.error('Błąd:', error);
+        alert("Błąd połączenia z serwerem.");
+    });
+}
+
+</script>
+
+</body>
+</html>
