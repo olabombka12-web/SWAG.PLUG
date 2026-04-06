@@ -1,5 +1,12 @@
 {
+  "name": "swag-plug",
+  "version": "1.0.0",
+  "description": "Archive essentials for the underground",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^4.18.2"
   }
 }
