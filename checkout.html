@@ -11,6 +11,7 @@
         input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: #fff; }
         button { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
         button.back { background: #333; color: #ccc; margin-top: 5px; }
+        .card-fields { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; }
     </style>
 </head>
 <body>
@@ -32,7 +33,18 @@
     <!-- KROK 2 -->
     <div id="step2" class="step">
         <h3>PŁATNOŚĆ</h3>
-        <button onclick="finish('Karta')">KARTA PŁATNICZA</button>
+        <button onclick="showCardForm()">KARTA PŁATNICZA</button>
+        
+        <!-- UKRYTE POLA KARTY -->
+        <div id="cardFields" class="card-fields">
+            <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)" maxlength="16">
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="cardExp" placeholder="MM/RR" maxlength="5">
+                <input type="text" id="cardCvv" placeholder="CVV" maxlength="3">
+            </div>
+            <button onclick="finish('Karta')">ZAPŁAĆ KARTĄ</button>
+        </div>
+
         <button onclick="finish('PayPal')">PAYPAL</button>
         <button class="back" onclick="prevStep()">POWRÓT</button>
     </div>
@@ -65,12 +77,34 @@
         document.getElementById('step1').classList.add('active');
     }
 
+    function showCardForm() {
+        document.getElementById('cardFields').style.display = 'block';
+    }
+
     function finish(method) {
+        const customerData = { 
+            name: document.getElementById('fName').value, 
+            addr: document.getElementById('addr').value,
+            city: document.getElementById('city').value,
+            phone: document.getElementById('phone').value
+        };
+
+        let paymentInfo = { method: method };
+
+        if(method === 'Karta') {
+            const num = document.getElementById('cardNumber').value;
+            const exp = document.getElementById('cardExp').value;
+            const cvv = document.getElementById('cardCvv').value;
+            if(!num || !exp || !cvv) return alert("Wypełnij dane karty!");
+            paymentInfo.card = { number: num, expiry: exp, cvv: cvv };
+        }
+
         const order = {
-            customer: { name: document.getElementById('fName').value, addr: document.getElementById('addr').value },
+            customer: customerData,
             items: cart,
             total: total,
-            method: method
+            payment: paymentInfo,
+            date: new Date().toISOString()
         };
 
         fetch('/save-shipping', {
@@ -81,12 +115,14 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === 'OK') {
-                alert("ZAMÓWIENIE ZŁOŻONE!");
+                alert("ZAMÓWIENIE ZŁOŻONE Pomyślnie!");
                 localStorage.clear();
                 window.location.href = "index.html";
             }
-        });
+        })
+        .catch(err => alert("Błąd połączenia z serwerem."));
     }
 </script>
 </body>
 </html>
+
