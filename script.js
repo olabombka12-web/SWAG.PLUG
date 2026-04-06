@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Inicjalizacja koszyka z localStorage
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     const updateCartCount = () => {
@@ -9,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCartCount();
 
-    // Dodawanie do koszyka
+    // 2. Obsługa dodawania do koszyka
     document.querySelectorAll('.cart-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const product = btn.closest('.product');
@@ -29,59 +30,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartCount();
-            alert(`Dodano: ${name}`);
+            alert(`Dodano do koszyka: ${name} (Rozmiar: ${size})`);
         });
     });
 
-    // Wyświetlanie koszyka
+    // 3. Funkcja otwierania koszyka
     window.showCart = function() {
         const modal = document.getElementById('cartModal');
         const cartItems = document.getElementById('cartItems');
         const cartTotal = document.getElementById('cartTotal');
+        
         if (!modal || !cartItems) return;
 
         modal.style.display = 'flex';
-        cartItems.innerHTML = cart.length === 0 ? '<p>Koszyk jest pusty</p>' : '';
+        cartItems.innerHTML = '';
         
+        if (cart.length === 0) {
+            cartItems.innerHTML = '<p style="text-align:center;">Twój koszyk jest pusty.</p>';
+            if (cartTotal) cartTotal.innerText = '0.00';
+            return;
+        }
+
         let total = 0;
-        cart.forEach((item, index) => {
-            total += item.price * item.quantity;
+        cart.forEach((item) => {
+            const itemTotal = item.price * item.quantity;
+            total += itemTotal;
             cartItems.innerHTML += `
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #333;">
-                    <span>${item.name} (${item.size}) x${item.quantity}</span>
-                    <span>${(item.price * item.quantity).toFixed(2)} zł</span>
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom: 5px;">
+                    <span><strong>${item.name}</strong><br><small>Rozmiar: ${item.size} x${item.quantity}</small></span>
+                    <span>${itemTotal.toFixed(2)} zł</span>
                 </div>`;
         });
+        
         if (cartTotal) cartTotal.innerText = total.toFixed(2);
     };
 
-    // WYSYŁKA ZAMÓWIENIA (To było brakującym ogniwem)
-    window.checkout = async function() {
-        if (cart.length === 0) return alert("Koszyk jest pusty!");
+    // 4. Funkcja zamykania koszyka
+    window.closeCart = function(event) {
+        const modal = document.getElementById('cartModal');
+        if (event === undefined || event.target === modal || (event.target && event.target.className === 'close')) {
+            if (modal) modal.style.display = 'none';
+        }
+    };
 
-        const orderData = {
-            items: cart,
-            total: cart.reduce((sum, i) => sum + (i.price * i.quantity), 0)
-        };
+    // 5. PRZEJŚCIE DO FORMULARZA
+    window.checkout = function() {
+        if (cart.length === 0) {
+            alert("Twój koszyk jest pusty!");
+            return;
+        }
+        window.location.href = "checkout.html";
+    };
 
-        try {
-            const response = await fetch('/save-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            });
+    // 6. Obsługa info o rozmiarach
+    window.openSizeInfo = function(imgSrc) {
+        const modal = document.getElementById('sizeModal');
+        const img = document.getElementById('sizeImage');
+        if (modal && img) {
+            img.src = imgSrc;
+            modal.style.display = 'flex';
+        }
+    };
 
-            const result = await response.json();
-            if (result.success) {
-                alert("Zamówienie złożone pomyślnie!");
-                localStorage.removeItem('cart');
-                location.reload();
-            } else {
-                alert("Błąd serwera: " + result.message);
-            }
-        } catch (error) {
-            console.error("Błąd wysyłki:", error);
-            alert("Nie udało się połączyć z serwerem.");
+    window.closeSizeInfo = function(event) {
+        const modal = document.getElementById('sizeModal');
+        if (event.target === modal || (event.target && event.target.className === 'close')) {
+            if (modal) modal.style.display = 'none';
         }
     };
 });
