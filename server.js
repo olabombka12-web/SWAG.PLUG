@@ -6,9 +6,8 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// POPRAWIONA KONFIGURACJA POCZTY
 const transporter = nodemailer.createTransport({
-    host: 'smtp.gmail.com', // <--- TUTAJ BYŁ BŁĄD, TERAZ JEST POPRAWNIE
+    host: 'smtp.gmail.com', // <--- TUTAJ BYŁ BŁĄD. TERAZ JEST POPRAWNIE.
     port: 465, 
     secure: true, 
     auth: {
