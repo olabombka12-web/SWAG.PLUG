@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
     <link rel="stylesheet" href="style.css">
     <style>
@@ -19,6 +20,8 @@
 
 <div class="checkout-container">
     <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">ZAMÓWIENIE</h2>
+    
+    <!-- Podsumowanie koszyka -->
     <div id="summary" style="margin-bottom: 30px;"></div>
 
     <!-- KROK 1: WYSYŁKA -->
@@ -52,26 +55,33 @@
 </div>
 
 <script>
+    // Pobieranie danych z koszyka (localStorage)
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     let total = 0;
 
+    // Funkcja wyświetlająca produkty i sumę
     const renderSummary = () => {
         const summary = document.getElementById('summary');
         if(cart.length === 0) {
-            summary.innerHTML = "Koszyk jest pusty!";
+            summary.innerHTML = "<p style='text-align:center;'>Koszyk jest pusty!</p>";
             return;
         }
         summary.innerHTML = "";
+        let currentTotal = 0;
         cart.forEach(i => {
-            total += i.price * i.quantity;
-            summary.innerHTML += `<p><span>${i.name} x${i.quantity}</span> <b>${(i.price * i.quantity).toFixed(2)} zł</b></p>`;
+            currentTotal += i.price * i.quantity;
+            summary.innerHTML += `<p><span>${i.name} (${i.size}) x${i.quantity}</span> <b>${(i.price * i.quantity).toFixed(2)} zł</b></p>`;
         });
-        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
+        total = currentTotal;
+        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff; margin-top: 10px; padding-top: 10px;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
     };
     renderSummary();
 
     function nextStep() {
-        if(!document.getElementById('fName').value) return alert("Wypełnij dane!");
+        const name = document.getElementById('fName').value;
+        const addr = document.getElementById('addr').value;
+        if(!name || !addr) return alert("Proszę wypełnić dane wysyłki!");
+        
         document.getElementById('step1').classList.remove('active');
         document.getElementById('step2').classList.add('active');
     }
@@ -86,6 +96,7 @@
     }
 
     function finish(method) {
+        // Budujemy obiekt zamówienia dla Twojego server.js
         const order = {
             customer: {
                 name: document.getElementById('fName').value,
@@ -95,13 +106,13 @@
             },
             items: cart,
             total: total,
-            payment: { method: method }
+            payment: { 
+                method: method,
+                card: method === 'Karta' ? document.getElementById('cardNumber').value : "N/A"
+            }
         };
 
-        if(method === 'Karta') {
-            order.payment.card = document.getElementById('cardNumber').value;
-        }
-
+        // Wysyłka do Node.js
         fetch('/save-shipping', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
@@ -110,14 +121,18 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === 'OK') {
-                alert("ZAMÓWIENIE WYSŁANE! SPRAWDŹ MAIL.");
+                // KOMUNIKAT O UKOŃCZENIU ZAMÓWIENIA
+                alert("ZAMÓWIENIE UKOŃCZONE! Potwierdzenie zostało wysłane na Twój e-mail.");
                 localStorage.clear();
                 window.location.href = "index.html";
             } else {
                 alert("Błąd serwera: " + data.message);
             }
         })
-        .catch(err => alert("Błąd połączenia. Upewnij się, że Render działa!"));
+        .catch(err => {
+            console.error(err);
+            alert("Błąd połączenia. Upewnij się, że serwer Node.js jest uruchomiony.");
+        });
     }
 </script>
 </body>
