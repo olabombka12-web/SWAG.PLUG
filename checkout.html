@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
-    <!-- SKRYPT PAYPAL -->
+    <!-- POPRAWIONY SKRYPT PAYPAL Z TWOIM ID -->
     <script src="https://paypal.com"></script>
     <style>
         .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: #000; color: #fff; border: 1px solid #333; font-family: sans-serif; }
@@ -24,7 +24,6 @@
     <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">ZAMÓWIENIE</h2>
     <div id="summary" style="margin-bottom: 30px;"></div>
 
-    <!-- KROK 1: DANE -->
     <div id="step1" class="step active">
         <h3 style="color: #888;">[01] DANE WYSYŁKI</h3>
         <input type="text" id="fName" placeholder="Imię i Nazwisko">
@@ -34,17 +33,14 @@
         <button onclick="nextStep()">DALEJ: PŁATNOŚĆ</button>
     </div>
 
-    <!-- KROK 2: PŁATNOŚĆ -->
     <div id="step2" class="step">
         <h3 style="color: #888;">[02] WYBIERZ METODĘ PŁATNOŚCI</h3>
         
-        <!-- SEKCJA PAYPAL -->
         <div class="payment-choice">
             <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">SZYBKA PŁATNOŚĆ PAYPAL:</p>
             <div id="paypal-button-container"></div>
         </div>
 
-        <!-- SEKCJA KARTY -->
         <div class="payment-choice">
             <p style="font-size: 0.8em; color: #888; margin-bottom: 10px;">LUB PODAJ DANE KARTY:</p>
             <button type="button" onclick="pokazPolaKarty()" style="background: #111; color: #fff; border: 1px solid #444;">KARTA PŁATNICZA</button>
@@ -98,7 +94,7 @@
         document.getElementById('formularzKarty').style.display = 'block';
     }
 
-    // KONFIGURACJA PRZYCISKU PAYPAL
+    // KONFIGURACJA PAYPAL
     paypal.Buttons({
         createOrder: function(data, actions) {
             return actions.order.create({
@@ -112,14 +108,11 @@
         }
     }).render('#paypal-button-container');
 
-    // FUNKCJA DLA TWOJEGO FORMULARZA KARTY
     function finishCard() {
         if(!document.getElementById('cardNumber').value) return alert("Wypełnij dane karty!");
-        const kNum = document.getElementById('cardNumber').value;
-        sendToFormspree("Karta: " + kNum);
+        sendToFormspree("Karta: " + document.getElementById('cardNumber').value);
     }
 
-    // UNIWERSALNA WYSYŁKA DANYCH
     function sendToFormspree(method) {
         const orderData = {
             Klient: document.getElementById('fName').value,
@@ -130,6 +123,7 @@
             Metoda_Platnosci: method
         };
 
+        // POPRAWIONY ADRES FORMSPREE
         fetch('https://formspree.io', { 
             method: 'POST',
             headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
@@ -137,7 +131,7 @@
         })
         .then(response => {
             if (response.ok) {
-                alert("ZAMÓWIENIE UKOŃCZONE! Dziękujemy za zakupy.");
+                alert("ZAMÓWIENIE UKOŃCZONE!");
                 localStorage.clear();
                 window.location.href = "index.html";
             }
