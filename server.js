@@ -6,26 +6,24 @@ const app = express();
 app.use(express.json());
 app.use(express.static(__dirname));
 
-// NOWA, STABILNIEJSZA KONFIGURACJA POCZTY
+// JEDYNA, POPRAWNA KONFIGURACJA POCZTY (Port 587 dla Render)
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true, // Używamy SSL
+    port: 587,
+    secure: false, // Musi być false dla portu 587
     auth: {
         user: 'olabomba12@gmail.com',
-        // WAŻNE: Usunąłem spacje z Twojego hasła aplikacyjnego
-        pass: 'rqijphovdgxhlczi' 
+        pass: 'rqijphovdgxhlczi' // Hasło bez spacji
     },
     tls: {
-        // To zapobiega błędom połączenia na serwerach typu Render
-        rejectUnauthorized: false
+        rejectUnauthorized: false // Pomaga uniknąć blokad na serwerach
     }
 });
 
 app.post('/save-shipping', (req, res) => {
     const order = req.body;
 
-    // Sprawdzenie czy dane dotarły
+    // Zabezpieczenie przed pustymi danymi
     if (!order.items || !order.customer) {
         return res.status(400).json({ status: 'error', message: 'Brak danych zamówienia' });
     }
@@ -50,23 +48,17 @@ app.post('/save-shipping', (req, res) => {
               `DATA: ${new Date().toLocaleString('pl-PL')}`
     };
 
-    // Wysyłka maila z logowaniem błędów
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.error("SZCZEGÓŁY BŁĘDU MAILA:", error);
-            return res.status(500).json({ 
-                status: 'error', 
-                message: 'Błąd wysyłki: ' + error.message 
-            });
+            console.error("BŁĄD WYSYŁKI:", error);
+            return res.status(500).json({ status: 'error', message: error.message });
         }
-        console.log('✅ Sukces! E-mail wysłany: ' + info.response);
+        console.log('✅ E-mail wysłany pomyślnie: ' + info.response);
         res.json({ status: 'OK' });
     });
 });
 
-// Obsługa portu dla Rendera
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 SWAG.PLUG ONLINE | Port: ${PORT}`);
 });
-le.log(`🚀 SWAG.PLUG ONLINE NA PORCIE ${PORT}`));
