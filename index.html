@@ -1,42 +1,40 @@
+html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8">
-<title>SWAG.PLUG</title>
-<meta name="„SWAG.PLUG — ARCHIVE ESSENTIALS FOR THE UNDERGROUND. NO RULES, NO LIMITS. JUST THE PLUG. JOIN THE VOID.”" content="SWAG.PLUG — Archive essentials for the underground. Cyber-grunge aesthetics and exclusive drops. Stay plugged in.">
-
-
-<link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>SWAG.PLUG</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SWAG.PLUG — Archive essentials for the underground. Cyber-grunge aesthetics and exclusive drops. Stay plugged in.">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+
 <div class="top-bar">
-Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie przed godziną 17:00
+    Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie przed godziną 17:00
 </div>
 
 <header>
-  <div class="logo">
-    <img src="images/sr.png" class="logo-icon" alt="Logo">
-    <span>SWAG.PLUG</span>
-  </div>
-  <nav>
-    <a href="#">STRONA GŁÓWNA</a>
-  </nav>
-  <div class="cart-icon">
-  <button onclick="showCart()">🛒 Koszyk (<span id="cart-count">0</span>)</button>
-</div>
+    <div class="logo">
+        <img src="images/sr.png" class="logo-icon" alt="Logo">
+        <span>SWAG.PLUG</span>
+    </div>
+    <nav><a href="#">STRONA GŁÓWNA</a></nav>
+    <div class="cart-icon">
+        <button onclick="showCart()">🛒 Koszyk (<span id="cart-count">0</span>)</button>
+    </div>
 </header>
 
 <div class="highlight">
-  <img src="images/light2.jpg" alt="Highlight">
-  <div class="scroll-indicator">
-  <span>SCROLL_DOWN</span>
-  <div class="arrow"></div>
+    <img src="images/light2.jpg" alt="Highlight">
+    <div class="scroll-indicator">
+        <span>SCROLL_DOWN</span>
+        <div class="arrow"></div>
+    </div>
 </div>
-
-</div>
-
+  
 <!-- PRODUCT (możesz kopiować ten blok) -->
 <section class="product">
   <div class="gallery">
@@ -1022,14 +1020,13 @@ Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie p
 </section>
 <!-- MODAL (size info) -->
 <div class="size-modal" id="sizeModal" onclick="closeSizeInfo(event)">
-  
   <div class="size-box">
     <span class="close" onclick="closeSizeInfo(event)">×</span>
     <img id="sizeImage" src="" alt="Size Chart">
   </div>
-
 </div>
-<script src="script.js"></script>
+
+<!-- MODAL (koszyk) -->
 <div class="cart-modal" id="cartModal" onclick="closeCart(event)">
   <div class="cart-box">
     <span class="close" onclick="closeCart(event)">×</span>
@@ -1041,5 +1038,8 @@ Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie p
     </div>
   </div>
 </div>
+
+<!-- SKRYPT NA SAMYM KOŃCU - PRZED ZAMKNIĘCIEM BODY -->
+<script src="script.js"></script>
 </body>
 </html>
