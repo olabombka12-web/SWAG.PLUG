@@ -1,17 +1,21 @@
-// 1. FUNKCJE GLOBALNE (Widoczne dla przycisków w HTML)
+// 1. FUNKCJE GLOBALNE (Dostępne dla przycisków w HTML)
 
 window.showCart = function() {
+    console.log("Próba otwarcia koszyka...");
     const modal = document.getElementById('cartModal');
     const cartItems = document.getElementById('cartItems');
     const cartTotal = document.getElementById('cartTotal');
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     if (!modal || !cartItems) {
-        console.error("Błąd: Nie znaleziono modala koszyka w HTML!");
+        alert("BŁĄD: Nie znaleziono w HTML elementu cartModal lub cartItems!");
         return;
     }
 
+    // Wyświetlanie modala
     modal.style.display = 'flex';
+    
+    // Czyszczenie i renderowanie produktów
     cartItems.innerHTML = cart.length === 0 ? '<p style="text-align:center;">Koszyk jest pusty</p>' : '';
     
     let total = 0;
@@ -24,6 +28,7 @@ window.showCart = function() {
                 <span>${subtotal.toFixed(2)} zł</span>
             </div>`;
     });
+    
     if (cartTotal) cartTotal.innerText = total.toFixed(2);
 };
 
@@ -33,7 +38,7 @@ window.checkout = function() {
         alert("Koszyk jest pusty!");
         return;
     }
-    // Przekierowanie do formularza
+    // Upewnij się, że plik na GitHubie nazywa się checkout.html (z literą k!)
     window.location.href = "checkout.html"; 
 };
 
@@ -47,7 +52,6 @@ window.closeCart = function(e) {
 // 2. LOGIKA ŁADOWANIA STRONY (Dodawanie do koszyka)
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Funkcja aktualizacji licznika na ikonie koszyka
     const updateCartCount = () => {
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const count = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -57,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCartCount();
 
-    // Obsługa przycisków "DODAJ DO KOSZYKA"
     document.querySelectorAll('.cart-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const product = btn.closest('.product');
