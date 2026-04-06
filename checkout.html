@@ -34,6 +34,15 @@
 
 <div class="checkout-container">
     <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">ZAMÓWIENIE</h2>
+    <div id="step2" class="step">
+        <h3 style="color: #888;">[02] DOKOŃCZ PŁATNOŚĆ</h3>
+        <p style="font-size: 0.9em; color: #ccc; margin-bottom: 15px;">Wybierz metodę płatności poniżej:</p>
+        
+        <!-- Tu PayPal automatycznie wstawi przyciski -->
+        <div id="paypal-button-container"></div>
+
+        <button class="back" onclick="prevStep()">POWRÓT DO DANYCH</button>
+    </div>
     <div id="summary" style="margin-bottom: 30px;"></div>
 
     <div id="step1" class="step active">
