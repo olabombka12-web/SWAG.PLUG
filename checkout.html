@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
     <link rel="stylesheet" href="style.css">
-    <!-- SKRYPT PAYPAL Z TWOIM CLIENT ID -->
-    <script src="https://paypal.com"></script>
+    <!-- SKRYPT PAYPAL Z TWOIM ID -->
+   <script src="https://paypal.com"></script>
+
     <style>
         .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: #000; color: #fff; border: 1px solid #333; font-family: sans-serif; }
         .step { display: none; }
@@ -16,6 +17,7 @@
         button:hover { background: #ccc; }
         button.back { background: #333; color: #ccc; margin-top: 5px; }
         #summary p { border-bottom: 1px solid #222; padding: 5px 0; margin: 5px 0; display: flex; justify-content: space-between; }
+        #paypal-button-container { margin-top: 20px; }
     </style>
 </head>
 <body>
@@ -24,7 +26,7 @@
     <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">ZAMÓWIENIE</h2>
     <div id="summary" style="margin-bottom: 30px;"></div>
 
-    <!-- KROK 1: DANE -->
+    <!-- KROK 1: WYSYŁKA -->
     <div id="step1" class="step active">
         <h3 style="color: #888;">[01] DANE WYSYŁKI</h3>
         <input type="text" id="fName" placeholder="Imię i Nazwisko">
@@ -38,9 +40,9 @@
     <div id="step2" class="step">
         <h3 style="color: #888;">[02] WYBIERZ METODĘ PŁATNOŚCI</h3>
         
-        <!-- Tu pojawią się przyciski PayPal i Karty -->
-        <div id="paypal-button-container" style="margin-top: 20px;"></div>
-        
+        <!-- Tu PayPal sam wstawi przyciski (Karta / PayPal) -->
+        <div id="paypal-button-container"></div>
+
         <button class="back" onclick="prevStep()">POWRÓT DO DANYCH</button>
     </div>
 </div>
@@ -52,7 +54,7 @@
     const renderSummary = () => {
         const summary = document.getElementById('summary');
         if(cart.length === 0) {
-            summary.innerHTML = "Koszyk jest pusty!";
+            summary.innerHTML = "<p style='text-align:center;'>Koszyk jest pusty!</p>";
             return;
         }
         summary.innerHTML = "";
@@ -62,12 +64,14 @@
             summary.innerHTML += `<p><span>${i.name} (${i.size}) x${i.quantity}</span> <b>${(i.price * i.quantity).toFixed(2)} zł</b></p>`;
         });
         total = currentTotal;
-        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff; padding-top: 10px;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
+        summary.innerHTML += `<p style="font-size: 1.2em; border-top: 1px solid #fff; margin-top: 10px; padding-top: 10px;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
     };
     renderSummary();
 
     function nextStep() {
-        if(!document.getElementById('fName').value) return alert("Wypełnij dane!");
+        if(!document.getElementById('fName').value || !document.getElementById('addr').value) {
+            return alert("Proszę wypełnić dane wysyłki!");
+        }
         document.getElementById('step1').classList.remove('active');
         document.getElementById('step2').classList.add('active');
     }
@@ -77,7 +81,7 @@
         document.getElementById('step1').classList.add('active');
     }
 
-    // LOGIKA PRZYCISKÓW PAYPAL
+    // KONFIGURACJA PAYPAL
     paypal.Buttons({
         createOrder: function(data, actions) {
             return actions.order.create({
@@ -90,31 +94,32 @@
         },
         onApprove: function(data, actions) {
             return actions.order.capture().then(function(details) {
-                // Płatność udana - wysyłamy info do Formspree
+                // Po udanej płatności wysyłamy maila przez Formspree
                 const orderData = {
                     Klient: document.getElementById('fName').value,
                     Adres: document.getElementById('addr').value + ", " + document.getElementById('city').value,
                     Telefon: document.getElementById('phone').value,
                     Produkty: cart.map(i => `${i.name} (${i.size}) x${i.quantity}`).join(", "),
                     Suma: total.toFixed(2) + " PLN",
-                    Status_Platnosci: "OPŁACONO (PayPal)",
+                    Status: "ZAPŁACONO",
                     ID_Transakcji: details.id
                 };
 
-                fetch('https://formspree.io', {
+                fetch('https://formspree.io/f/mzdkopjg', { 
                     method: 'POST',
                     headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
                     body: JSON.stringify(orderData)
-                }).then(() => {
-                    alert('PŁATNOŚĆ UDANA! Zamówienie zostało przyjęte.');
+                })
+                .then(() => {
+                    alert("ZAMÓWIENIE UKOŃCZONE! Dziękujemy.");
                     localStorage.clear();
                     window.location.href = "index.html";
                 });
             });
         },
         onError: function(err) {
+            alert("Błąd płatności. Upewnij się, że Twoje konto PayPal Live jest w pełni skonfigurowane.");
             console.error(err);
-            alert("Wystąpił błąd podczas płatności. Spróbuj ponownie.");
         }
     }).render('#paypal-button-container');
 </script>
