@@ -1,19 +1,17 @@
-html
 <!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>SWAG.PLUG</title>
+    <title>SWAG.PLUG — ARCHIVE ESSENTIALS</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SWAG.PLUG — Archive essentials for the underground. Cyber-grunge aesthetics and exclusive drops. Stay plugged in.">
+    <meta name="description" content="SWAG.PLUG — Archive essentials for the underground. Cyber-grunge aesthetics.">
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-
 <div class="top-bar">
-    Bezpłatna wysyłka przy zamówieniach powyżej 50 zł ✓ Złóż zamówienie przed godziną 17:00
+    FREE WORLDWIDE SHIPPING ABOVE 50 PLN ✓ ORDER BEFORE 5:00 PM
 </div>
 
 <header>
@@ -21,10 +19,9 @@ html
         <img src="images/sr.png" class="logo-icon" alt="Logo">
         <span>SWAG.PLUG</span>
     </div>
-    <nav><a href="#">STRONA GŁÓWNA</a></nav>
+    <nav><a href="index.html">HOME / START</a></nav>
     <div class="cart-icon">
-       <button onclick="showCart()">🛒 Koszyk (<span id="cart-count">0</span>)</button>
-
+       <button onclick="showCart()">🛒 CART / KOSZYK (<span id="cart-count">0</span>)</button>
     </div>
 </header>
 
@@ -36,7 +33,6 @@ html
     </div>
 </div>
   
-<!-- PRODUCT (możesz kopiować ten blok) -->
 <section class="product">
   <div class="gallery">
     <div class="main-image">
@@ -46,25 +42,28 @@ html
 
   <div class="details">
     <h2>Angel Bones Corset</h2>
-    <div class="price">89 zł</div>
+    <div class="price">89.00 PLN</div>
 
-    <label>Size</label>
-    <select>
-      <option>XS</option>
-      <option>S</option>
-      <option>M</option>
-      <option>L</option>
-      <option>XL</option>
-    </select>
-
-    <div class="quantity">
-      <input type="number" value="1" min="1">
+    <div class="selection-row">
+        <label>SIZE / ROZMIAR</label>
+        <select id="productSize">
+          <option>XS</option>
+          <option>S</option>
+          <option>M</option>
+          <option>L</option>
+          <option>XL</option>
+        </select>
     </div>
 
-    <button class="cart-btn">DODAJ DO KOSZYKA</button>
+    <div class="quantity-row">
+      <label>QTY / ILOŚĆ</label>
+      <input type="number" id="productQty" value="1" min="1">
+    </div>
 
+    <button class="cart-btn" onclick="addToCart('Angel Bones Corset', 89)">ADD TO CART / DODAJ DO KOSZYKA</button>
+    
     <p class="size-info-link" onclick="openSizeInfo('images/kurwa.jpg')">
-      Size info
+      Size guide / Tabela rozmiarów
     </p>
   </div>
 </section>
@@ -1027,21 +1026,51 @@ html
   </div>
 </div>
 
+<!-- MODAL (size info) -->
+<div class="size-modal" id="sizeModal" style="display:none;" onclick="closeSizeInfo(event)">
+  <div class="size-box">
+    <span class="close" onclick="document.getElementById('sizeModal').style.display='none'">×</span>
+    <img id="sizeImage" src="" alt="Size Chart">
+  </div>
+</div>
+
 <!-- MODAL KOSZYKA -->
-<div class="cart-modal" id="cartModal" onclick="closeCart(event)">
+<div class="cart-modal" id="cartModal" style="display:none;" onclick="closeCart(event)">
   <div class="cart-box">
     <span class="close" onclick="closeCart(event)">×</span>
-    <h2>Twój koszyk</h2>
+    <h2>YOUR CART / TWÓJ KOSZYK</h2>
     <div id="cartItems"></div>
     <div class="cart-actions">
-      <p>Łączna kwota: <span id="cartTotal">0</span> zł</p>
-      <button onclick="checkout()">Przejdź do kasy</button>
+      <p>TOTAL / SUMA: <span id="cartTotal">0</span> PLN</p>
+      <button class="checkout-btn" onclick="goToCheckout()">CHECKOUT / KASA</button>
     </div>
   </div>
 </div>
 
-
-<!-- SKRYPT NA SAMYM KOŃCU - PRZED ZAMKNIĘCIEM BODY -->
+<!-- SKRYPTY -->
 <script src="script.js"></script>
+<script>
+    // Proste funkcje nawigacyjne dla przycisków w HTML
+    function openSizeInfo(imgSrc) {
+        document.getElementById('sizeImage').src = imgSrc;
+        document.getElementById('sizeModal').style.display = 'flex';
+    }
+    function closeSizeInfo(e) {
+        if(e.target.id === 'sizeModal') e.target.style.display = 'none';
+    }
+    function showCart() {
+        document.getElementById('cartModal').style.display = 'flex';
+        // Tutaj script.js powinien odświeżyć listę produktów
+    }
+    function closeCart(e) {
+        if(e.target.id === 'cartModal' || e.target.className === 'close') {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+    }
+    function goToCheckout() {
+        window.location.href = "checkout.html";
+    }
+</script>
+
 </body>
 </html>
