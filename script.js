@@ -1,3 +1,12 @@
+// --- KONFIGURACJA WALUTY (Musi być taka sama jak w checkout.html) ---
+const rates = { "PLN": 1, "USD": 0.25, "EUR": 0.23 };
+let currentCurrency = localStorage.getItem('userCurrency') || 'PLN';
+
+window.changeCurrency = function(val) {
+    localStorage.setItem('userCurrency', val);
+    location.reload(); // Przeładowanie strony aktualizuje ceny
+};
+
 // 1. FUNKCJE GLOBALNE
 window.showCart = function() {
     const modal = document.getElementById('cartModal');
@@ -14,10 +23,14 @@ window.showCart = function() {
         cartItems.innerHTML = '<p style="text-align:center; color:#888;">Your cart is empty / Koszyk jest pusty</p>';
     }
 
-    let total = 0;
+    let totalPLN = 0;
     cart.forEach((item, index) => {
-        const subtotal = item.price * item.quantity;
-        total += subtotal;
+        const itemSubtotalPLN = item.price * item.quantity;
+        totalPLN += itemSubtotalPLN;
+
+        // Przeliczanie ceny na wybraną walutę do wyświetlenia
+        const displaySubtotal = (itemSubtotalPLN * rates[currentCurrency]).toFixed(2);
+
         cartItems.innerHTML += `
             <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #222; padding:10px 0; font-size:13px;">
                 <div style="flex:1;">
@@ -25,21 +38,23 @@ window.showCart = function() {
                     <small style="color:#666;">Size: ${item.size} | Qty: ${item.quantity}</small>
                 </div>
                 <div style="text-align:right;">
-                    <span style="color:#fff;">${subtotal.toFixed(2)} PLN</span><br>
+                    <span style="color:#fff;">${displaySubtotal} ${currentCurrency}</span><br>
                     <button onclick="removeFromCart(${index})" style="background:none; color:red; border:none; cursor:pointer; font-size:10px; padding:0;">[ REMOVE ]</button>
                 </div>
             </div>`;
     });
     
-    if (cartTotal) cartTotal.innerText = total.toFixed(2);
+    // Przeliczanie sumy końcowej
+    if (cartTotal) {
+        cartTotal.innerText = (totalPLN * rates[currentCurrency]).toFixed(2) + " " + currentCurrency;
+    }
 };
 
-// Funkcja usuwania z koszyka
 window.removeFromCart = function(index) {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     cart.splice(index, 1);
     localStorage.setItem('cart', JSON.stringify(cart));
-    showCart(); // Odśwież widok
+    showCart();
     updateCartCount();
 };
 
@@ -56,7 +71,6 @@ window.closeCart = function(e) {
     }
 };
 
-// Funkcja aktualizacji licznika na ikonce
 function updateCartCount() {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const count = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -64,18 +78,33 @@ function updateCartCount() {
     if (cartCountEl) cartCountEl.innerText = count;
 }
 
-// 2. LOGIKA DODAWANIA DO KOSZYKA
+// 2. LOGIKA DODAWANIA DO KOSZYKA I CENY NA STRONIE
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
+
+    // Ustawienie poprawnej waluty w select jeśli istnieje
+    const select = document.getElementById('currencySelect');
+    if(select) select.value = currentCurrency;
+
+    // Przeliczenie cen produktów na stronie głównej przy starcie
+    document.querySelectorAll('.price').forEach(el => {
+        const basePrice = parseFloat(el.innerText);
+        if(!isNaN(basePrice)) {
+            const converted = (basePrice * rates[currentCurrency]).toFixed(2);
+            el.innerText = `${converted} ${currentCurrency}`;
+        }
+    });
 
     document.querySelectorAll('.cart-btn').forEach(btn => {
         btn.onclick = () => {
             const product = btn.closest('.product');
             const name = product.querySelector('h2').innerText;
-            const priceText = product.querySelector('.price').innerText;
+            
+            // Pobieramy zawsze bazową cenę w PLN (zakładamy, że w HTML masz liczbę bez waluty lub parsowaną poprawnie)
+            // Jeśli w HTML masz "89.00 PLN", ten regex wyciągnie 89.00
+            const priceText = product.querySelector('.price').dataset.basePrice || product.querySelector('.price').innerText;
             const price = parseFloat(priceText.replace(/[^\d.,]/g, '').replace(',', '.'));
             
-            // POBIERANIE ROZMIARU I ILOŚCI Z INPUTÓW
             const size = product.querySelector('select')?.value || 'One Size';
             const qtyInput = product.querySelector('input[type="number"]');
             const qty = qtyInput ? parseInt(qtyInput.value) : 1;
@@ -92,10 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('cart', JSON.stringify(currentCart));
             updateCartCount();
             
-            // Efekt wizualny zamiast zwykłego alertu (opcjonalnie)
             btn.innerText = "ADDED! / DODANO!";
             setTimeout(() => { btn.innerText = "ADD TO CART / DODAJ DO KOSZYKA"; }, 1500);
         };
     });
 });
-
